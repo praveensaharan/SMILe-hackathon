@@ -15,6 +15,7 @@ import UserForm from "./components/UserHome1/FormUser";
 import DemoMap from "./components/Demomap";
 import NotExist from "./components/NotExist";
 import AdminDashboard from "./components/Admin/Dashboard";
+import UserDashboard from "./components/User/Dashboard";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/signup" element={<Signin />} />
           <Route path="/form" element={<UserForm />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/user/dashboard" element={<UserDashboard />} />
           <Route path="*" element={<NotExist />} />
         </Routes>
       </div>

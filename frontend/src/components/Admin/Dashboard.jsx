@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import { Spin, Alert, message as antdMessage } from "antd";
 
 const Dashboard = () => {
   const [error, setError] = useState(null);
@@ -14,10 +15,12 @@ const Dashboard = () => {
     if (isLoaded) {
       if (isSignedIn) {
         if (user && user.publicMetadata.role !== "admin") {
+          antdMessage.error("You do not have admin privileges.");
           setError("You do not have admin privileges.");
           signOut({ redirectUrl: "/" });
         }
       } else {
+        antdMessage.error("You are not signed in.");
         navigate("/signin");
       }
     }
