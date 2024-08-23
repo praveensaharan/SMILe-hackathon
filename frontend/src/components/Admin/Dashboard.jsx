@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { Spin, Alert, message as antdMessage } from "antd";
+import Content from "./Content";
 
 const Dashboard = () => {
   const [error, setError] = useState(null);
@@ -34,7 +35,11 @@ const Dashboard = () => {
     return <div>{error}</div>;
   }
 
-  return <div>Admin Dashboard</div>;
+  return (
+    <>
+      <Content />
+    </>
+  );
 };
 
 export default Dashboard;
