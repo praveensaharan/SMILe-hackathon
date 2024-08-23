@@ -1,0 +1,35 @@
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: translateY(0) translateX(0) scale(1.05);
+    }
+
+    50% {
+        transform: translateY(-10px) translateX(10px) scale(1.1);
+    }
+}
+
+@keyframes fade-in-up {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-wave {
+    animation: wave 10s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 1s ease-out forwards;
+}
+
+.animate-fade-in-up.delay-200 {
+    animation-delay: 0.2s;
+}

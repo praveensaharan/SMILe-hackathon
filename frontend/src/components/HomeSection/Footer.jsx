@@ -1,71 +1,137 @@
 import React from "react";
+import { FaRegPaperPlane, FaCopy, FaCheck } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
+// import logo from "../../assets"
+import Logo from "../../assets/logo-no-background.png";
 
-function Footer() {
+const Footer = () => {
   return (
-    <footer className="bg-darkgray text-white py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-xl font-semibold mb-4">About Us</h3>
-            <p>Meet the team and learn our mission.</p>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Contact Us</h3>
-            <p>Email: info@example.com</p>
-            <p>Phone: (123) 456-7890</p>
-            <div className="flex space-x-4 mt-4">
-              <a href="#" className="hover:text-lightblue">
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2.04c-5.52 0-10 4.48-10 10 0 4.42 3.58 8.07 8 8.93v-6.28h-2.4v-2.64h2.4v-1.9c0-2.4 1.44-3.72 3.64-3.72 1.05 0 2.14.2 2.14.2v2.36h-1.2c-1.2 0-1.56.76-1.56 1.55v1.89h2.64l-.42 2.64h-2.22v6.28c4.42-.86 8-4.51 8-8.93 0-5.52-4.48-10-10-10z" />
-                </svg>
-              </a>
-              <a href="#" className="hover:text-lightblue">
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M23 3c-.8.35-1.6.58-2.5.68.9-.55 1.6-1.45 1.92-2.5-.85.5-1.8.85-2.8 1.04-1-.88-2.4-1.45-3.8-1.45-2.8 0-5 2.3-5 5 0 .4 0 .8.1 1.1-4.1-.2-7.8-2.2-10.2-5.3-.5.8-.8 1.8-.8 2.9 0 2 .9 3.7 2.4 4.7-.8 0-1.6-.2-2.3-.6v.1c0 2.8 2 5.2 4.6 5.7-.5.1-1 .2-1.5.2-.4 0-.7 0-1 0 .7 2.3 2.8 3.9 5.2 3.9-2 1.5-4.5 2.3-7.2 2.3-.5 0-1 0-1.4-.1 2.6 1.7 5.7 2.7 9 2.7 10.8 0 16.6-9 16.6-16.7 0-.2 0-.4 0-.5.1-.5.2-.9.3-1.4z" />
-                </svg>
-              </a>
-              <a href="#" className="hover:text-lightblue">
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm4.5 10.75h-3v6.5h-3v-6.5h-3v-2.75h3v-2.25c0-2.21 1.79-4 4-4h3v2.75h-3c-.28 0-.5.22-.5.5v1.75h3.5l-.5 2.75z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Privacy Policy</h3>
-            <p>
-              <a href="#" className="hover:text-lightblue">
-                Read our Privacy Policy
-              </a>
-            </p>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Terms of Service</h3>
-            <p>
-              <a href="#" className="hover:text-lightblue">
-                Read our Terms of Service
-              </a>
+    <div className="px-4 pt-16 mx-auto w-full md:px-24 lg:px-8 bg-[#27374D]">
+      <div className="grid gap-10 row-gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="sm:col-span-2">
+          <Link
+            to="/"
+            aria-label="Go home"
+            title="Company"
+            className="inline-flex items-center bg-slate-50 px-3 py-1 rounded-xl font-bold text-customBlue"
+          >
+            <img src={Logo} alt="Logipredict" className="h-12 w-40" />
+          </Link>
+
+          <div className="mt-6 lg:max-w-sm">
+            <p className="text-sm text-[#e3e2df]">
+              LogiPredict optimizes logistics services using data-driven
+              insights and machine learning, providing predictive pricing and
+              A/B testing tools.
             </p>
           </div>
         </div>
-        <div className="mt-8 border-t border-lightgray pt-4 text-center">
-          <p>&copy; 2024 Logistics Company. All rights reserved.</p>
+        <div className="space-y-2 text-sm">
+          <p className="text-base font-bold tracking-wide text-[#e3e2df]">
+            Contacts
+          </p>
+          <div className="flex">
+            <p className="mr-1 text-[#e3e2df]">Phone:</p>
+            <a
+              href="tel:850-123-5021"
+              aria-label="Our phone"
+              title="Our phone"
+              className="transition-colors duration-300 text-[#e3afbc] hover:text-[#9a1750]"
+            >
+              850-123-5021
+            </a>
+          </div>
+          <div className="flex">
+            <p className="mr-1 text-[#e3e2df]">Email:</p>
+            <a
+              href="mailto:praveen200040109@gmail.com"
+              aria-label="Our email"
+              title="Our email"
+              className="transition-colors duration-300 text-[#e3afbc] hover:text-[#9a1750]"
+            >
+              carrers@logipredict.com
+            </a>
+          </div>
+          <div className="flex">
+            <p className="mr-1 text-[#e3e2df]">Address:</p>
+            <a
+              href="https://www.google.com/maps"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Our address"
+              title="Our address"
+              className="transition-colors duration-300 text-[#e3afbc] hover:text-[#9a1750]"
+            >
+              1-8-1 Akasaka, Minato-ku, Tokyo 107-8672
+            </a>
+          </div>
+        </div>
+        <div>
+          <span className="text-base font-bold tracking-wide text-[#e3e2df]">
+            Social
+          </span>
+          <div className="flex items-center mt-1 space-x-3">
+            <a
+              href="https://twitter.com/"
+              className="text-[#e3e2df] transition-colors duration-300 hover:text-[#9a1750]"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
+                <path d="M24,4.6c-0.9,0.4-1.8,0.7-2.8,0.8c1-0.6,1.8-1.6,2.2-2.7c-1,0.6-2,1-3.1,1.2c-0.9-1-2.2-1.6-3.6-1.6 c-2.7,0-4.9,2.2-4.9,4.9c0,0.4,0,0.8,0.1,1.1C7.7,8.1,4.1,6.1,1.7,3.1C1.2,3.9,1,4.7,1,5.6c0,1.7,0.9,3.2,2.2,4.1 C2.4,9.7,1.6,9.5,1,9.1c0,0,0,0,0,0.1c0,2.4,1.7,4.4,3.9,4.8c-0.4,0.1-0.8,0.2-1.3,0.2c-0.3,0-0.6,0-0.9-0.1c0.6,2,2.4,3.4,4.6,3.4 c-1.7,1.3-3.8,2.1-6.1,2.1c-0.4,0-0.8,0-1.2-0.1c2.2,1.4,4.8,2.2,7.5,2.2c9.1,0,14-7.5,14-14c0-0.2,0-0.4,0-0.6 C22.5,6.4,23.3,5.5,24,4.6z"></path>
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/"
+              className="text-[#e3e2df] transition-colors duration-300 hover:text-[#9a1750]"
+            >
+              <svg viewBox="0 0 30 30" fill="currentColor" className="h-6">
+                <circle cx="15" cy="15" r="4"></circle>
+                <path d="M19.999,3h-10C6.14,3,3,6.141,3,10.001v10C3,23.86,6.141,27,10.001,27h10C23.86,27,27,23.859,27,19.999v-10 C27,6.14,23.859,3,19.999,3z M15,21c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S18.309,21,15,21z M22,9c-0.552,0-1-0.448-1-1 c0-0.552,0.448-1,1-1s1,0.448,1,1C23,8.552,22.552,9,22,9z"></path>
+              </svg>
+            </a>
+            <a
+              href="https://www.facebook.com/"
+              className="text-[#e3e2df] transition-colors duration-300 hover:text-[#9a1750]"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
+                <path d="M22,0H2C0.895,0,0,0.895,0,2v20c0,1.105,0.895,2,2,2h11v-9h-3v-4h3V8.413c0-3.1,1.893-4.788,4.659-4.788 c1.325,0,2.463,0.099,2.795,0.143v3.24l-1.918,0.001c-1.504,0-1.795,0.715-1.795,1.763V11h4.44l-1,4h-3.44v9H22c1.105,0,2-0.895,2-2 V2C24,0.895,23.105,0,22,0z"></path>
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
-    </footer>
+      <div className="flex flex-col-reverse justify-between pt-5 pb-10 border-t border-[#e3afbc] lg:flex-row">
+        <p className="text-sm text-[#e3e2df]">
+          © Copyright 2024 LogiPredict Inc. All rights reserved.
+        </p>
+        <ul className="flex flex-col mb-3 space-y-2 lg:mb-0 sm:space-y-0 sm:space-x-5 sm:flex-row">
+          <li>
+            <a
+              href="/"
+              className="text-sm text-[#e3e2df] transition-colors duration-300 hover:text-[#9a1750]"
+            >
+              F.A.Q
+            </a>
+          </li>
+          <li>
+            <a
+              href="/"
+              className="text-sm text-[#e3e2df] transition-colors duration-300 hover:text-[#9a1750]"
+            >
+              Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a
+              href="/"
+              className="text-sm text-[#e3e2df] transition-colors duration-300 hover:text-[#9a1750]"
+            >
+              Terms &amp; Conditions
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
   );
-}
+};
 
 export default Footer;

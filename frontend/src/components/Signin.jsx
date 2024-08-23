@@ -1,131 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { SignIn, SignUp, useUser, useClerk } from "@clerk/clerk-react";
+import { useSignIn } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import { Spin, Alert, message as antdMessage } from "antd";
+import UserLogin from "./User/UserLogin";
+import AdminLogin from "./Admin/AdminLogin";
+const imageurl =
+  "https://plus.unsplash.com/premium_photo-1681487814165-018814e29155?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 const Signin = () => {
-  const [adminData, setAdminData] = useState({ email: "", password: "" });
-  const [userData, setUserData] = useState({ email: "", password: "" });
+  const { isLoaded } = useSignIn();
 
-  const handleAdminChange = (e) => {
-    const { name, value } = e.target;
-    setAdminData({ ...adminData, [name]: value });
-  };
+  const navigate = useNavigate();
+  const { signOut } = useClerk();
+  const { user } = useUser();
 
-  const handleUserChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  };
+  useEffect(() => {
+    const checkAdminPrivileges = async () => {
+      if (isLoaded && user) {
+        if (user.publicMetadata.role === "admin") {
+          antdMessage.success("Admin signed in successfully!");
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
+      }
+    };
 
-  const handleAdminSubmit = (e) => {
-    e.preventDefault();
-    // Add your admin sign-in logic here
-    console.log("Admin signed in:", adminData);
-  };
-
-  const handleUserSubmit = (e) => {
-    e.preventDefault();
-    // Add your user sign-in logic here
-    console.log("User signed in:", userData);
-  };
+    checkAdminPrivileges();
+  }, [isLoaded, user, signOut, navigate]);
 
   return (
-    <div className="bg-lightgray min-h-screen flex items-center justify-center py-12 px-4">
-      <div className="max-w-6xl w-full bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Admin Sign In */}
-          <div className="p-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              Admin Sign In
-            </h2>
-            <form onSubmit={handleAdminSubmit}>
-              <div className="mb-4">
-                <label
-                  htmlFor="adminEmail"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="adminEmail"
-                  name="email"
-                  value={adminData.email}
-                  onChange={handleAdminChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="adminPassword"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="adminPassword"
-                  name="password"
-                  value={adminData.password}
-                  onChange={handleAdminChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue hover:bg-lightblue text-white font-bold py-3 px-4 rounded-lg transition duration-300"
-              >
-                Sign In
-              </button>
-            </form>
-          </div>
+    <div className="relative bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen flex items-center justify-center py-12 px-4">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{
+          backgroundImage: `url(${imageurl})`,
+        }}
+      ></div>
+      <div className="relative max-w-6xl w-full overflow-hidden">
+        <div className="absolute inset-x-0 top-1/2 h-0.5 bg-gradient-to-r from-blue-500 to-orange-500 md:inset-y-0 md:left-1/2 md:w-0.5 md:h-full md:bg-gradient-to-b"></div>
 
-          {/* User Sign In */}
-          <div className="bg-darkgray text-white p-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              User Sign In
-            </h2>
-            <form onSubmit={handleUserSubmit}>
-              <div className="mb-4">
-                <label
-                  htmlFor="userEmail"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="userEmail"
-                  name="email"
-                  value={userData.email}
-                  onChange={handleUserChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="userPassword"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="userPassword"
-                  name="password"
-                  value={userData.password}
-                  onChange={handleUserChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-lightblue hover:bg-blue text-darkgray font-bold py-3 px-4 rounded-lg transition duration-300"
-              >
-                Sign In
-              </button>
-            </form>
+        <div className="relative grid grid-cols-1 md:grid-cols-2">
+          <div className="flex flex-col items-center p-6">
+            <AdminLogin />
+          </div>
+          <div className="flex flex-col items-center p-3">
+            <UserLogin />
           </div>
         </div>
       </div>

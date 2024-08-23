@@ -1,44 +1,29 @@
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import DefaultNav from "./Nav";
+import AdminNav from "./Admin/Navbar";
+import UserNav from "./User/Navbar";
 
-function Navbar() {
-  return (
-    <nav className="bg-darkgray p-4 shadow-lg">
-      <ul className="flex justify-center space-x-8">
-        <li>
-          <Link
-            to="/"
-            className="text-lightgray hover:text-lightblue font-semibold"
-          >
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/signup"
-            className="text-lightgray hover:text-lightblue font-semibold"
-          >
-            Signup
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/signin"
-            className="text-lightgray hover:text-lightblue font-semibold"
-          >
-            Signin
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/form"
-            className="text-lightgray hover:text-lightblue font-semibold"
-          >
-            Form
-          </Link>
-        </li>
-      </ul>
-    </nav>
-  );
-}
+const Navigation = () => {
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
+  const [navComponent, setNavComponent] = useState(<DefaultNav />);
 
-export default Navbar;
+  useEffect(() => {
+    if (isLoaded) {
+      if (isSignedIn) {
+        if (user && user.publicMetadata.role === "admin") {
+          setNavComponent(<AdminNav />);
+        } else {
+          setNavComponent(<UserNav />);
+        }
+      } else {
+        setNavComponent(<DefaultNav />);
+      }
+    }
+  }, [isLoaded, isSignedIn, user]);
+
+  return <>{navComponent}</>;
+};
+
+export default Navigation;
