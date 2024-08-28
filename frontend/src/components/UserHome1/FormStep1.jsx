@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Spin } from "antd";
+import { Spin } from "antd";
 import { useUser } from "@clerk/clerk-react";
 
 const FormStep1 = ({ formData, handleChange }) => {
   const { user, isLoaded } = useUser();
-  const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isLoaded) {
-      // Set form values once user data and formData are ready
-      form.setFieldsValue({
-        name: user?.fullName || formData.name || "",
-        contact:
-          user?.primaryEmailAddress?.emailAddress || formData.contact || "",
+    if (isLoaded && user) {
+      const initialValues = {
+        name: user.fullName || "",
+        contact: user.primaryEmailAddress?.emailAddress || "",
+      };
+
+      handleChange({
+        target: { name: "name", value: initialValues.name },
       });
+      handleChange({
+        target: { name: "contact", value: initialValues.contact },
+      });
+
       setLoading(false);
     }
-  }, [isLoaded, user, form, formData, form.setFieldsValue]);
+  }, [isLoaded, user]);
+
+  const handleInputChange = (e) => {
+    handleChange(e);
+  };
 
   if (loading) {
     return (
@@ -28,38 +37,44 @@ const FormStep1 = ({ formData, handleChange }) => {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-white p-6">
       <h2 className="text-2xl font-semibold mb-6 text-blue-600">
         Personal Information
       </h2>
-      <Form
-        form={form}
-        layout="vertical"
-        onValuesChange={(changedValues) => handleChange(changedValues)}
-      >
-        <Form.Item
-          label="Name"
+      <div className="mb-4">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium mb-2 text-darkgray"
+        >
+          Name
+        </label>
+        <input
+          type="text"
+          id="name"
           name="name"
-          rules={[{ required: true, message: "Please enter your name" }]}
+          value={formData.name}
+          onChange={handleInputChange}
+          className="w-full p-3 border border-lightgray rounded-lg focus:outline-none focus:border-blue"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label
+          htmlFor="contact"
+          className="block text-sm font-medium mb-2 text-darkgray"
         >
-          <Input
-            placeholder="Enter your name"
-            className="border border-lightgray rounded-lg"
-          />
-        </Form.Item>
-        <Form.Item
-          label="Phone / Email"
+          Phone / Email
+        </label>
+        <input
+          type="text"
+          id="contact"
           name="contact"
-          rules={[
-            { required: true, message: "Please enter your phone or email" },
-          ]}
-        >
-          <Input
-            placeholder="Enter your phone number or email address"
-            className="border border-lightgray rounded-lg"
-          />
-        </Form.Item>
-      </Form>
+          value={formData.contact || ""}
+          onChange={handleInputChange}
+          className="w-full p-3 border border-lightgray rounded-lg focus:outline-none focus:border-blue"
+          required
+        />
+      </div>
     </div>
   );
 };
