@@ -81,7 +81,7 @@ const FormUser = () => {
   const handlePrevious = () => setCurrentStep(currentStep - 1);
 
   return (
-    <div className="bg-lightgray min-h-screen flex items-center justify-center py-12 px-4">
+    <div className="bg-gradient-to-r from-blue-200 to-indigo-300 min-h-screen flex items-center justify-center py-12 px-4">
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8">
         <h2 className="text-2xl font-bold mb-6 text-center text-blue">
           Logistics Booking Form
@@ -127,14 +127,14 @@ const FormUser = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="bg-blue hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                className="bg-blue-500 hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
               >
                 Next
               </button>
             ) : (
               <button
                 type="submit"
-                className="bg-blue hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                className="bg-blue-500 hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
               >
                 Submit
               </button>

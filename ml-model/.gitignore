@@ -1,0 +1,11 @@
+# FastAPI
+__pycache__/
+env
+.env.*
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.vercel

@@ -16,6 +16,7 @@ import DemoMap from "./components/Demomap";
 import NotExist from "./components/NotExist";
 import AdminDashboard from "./components/Admin/Dashboard";
 import UserDashboard from "./components/User/Dashboard";
+import Prediction from "./components/User/Prediction2";
 
 function App() {
   return (
@@ -24,7 +25,15 @@ function App() {
       <div className="mt-16">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/predictor" element={<DemoMap />} />
+          <Route
+            path="/predictor"
+            element={
+              <>
+                <Prediction />
+                {/* <DemoMap /> */}
+              </>
+            }
+          />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signin />} />
           <Route path="/form" element={<UserForm />} />
