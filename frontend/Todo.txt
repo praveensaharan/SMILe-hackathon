@@ -1,0 +1,3 @@
+we need to predict the price and then store it if user save then else not
+
+check that we can send the information based on url

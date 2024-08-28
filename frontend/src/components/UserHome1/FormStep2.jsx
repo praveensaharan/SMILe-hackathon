@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import debounce from "lodash/debounce";
 
-const FormStep2 = ({ formData, handleAddressChange, handleChange }) => {
+const FormStep2 = ({ formData, handleChange, handleChange2 }) => {
   const [originQuery, setOriginQuery] = useState("");
   const [originSuggestions, setOriginSuggestions] = useState([]);
   const [isOriginSuggestionVisible, setOriginSuggestionVisible] =
@@ -60,10 +60,13 @@ const FormStep2 = ({ formData, handleAddressChange, handleChange }) => {
     };
 
     setOriginQuery(suggestion.description);
-    handleAddressChange(
-      { target: { name: "line1", value: suggestion.description } },
-      "pickupAddress"
-    );
+    handleChange2({
+      target: {
+        name: "pickupAddress",
+        value: `${suggestion.description}++--${location.lat}++--${location.lng}`,
+      },
+    });
+
     setOriginSuggestions([]);
     setOriginSuggestionVisible(false);
   };
@@ -85,10 +88,9 @@ const FormStep2 = ({ formData, handleAddressChange, handleChange }) => {
             type="text"
             id="pickupAddressLine1"
             name="line1"
-            value={formData.pickupAddress.line1 || originQuery}
+            value={formData.pickupAddress || originQuery}
             onChange={(e) => {
               setOriginQuery(e.target.value);
-              handleAddressChange(e, "pickupAddress");
             }}
             placeholder="Enter pickup address"
             className="w-full p-3 border border-lightgray rounded-lg focus:outline-none focus:border-blue-600"
