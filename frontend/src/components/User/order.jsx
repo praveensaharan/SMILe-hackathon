@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSession } from "@clerk/clerk-react";
+import { Spin } from "antd";
+const BaseUrl = "https://backend-peach-theta.vercel.app";
 
+// Date formatting function
 const formatDateToReadable = (dateString) => {
   const orderDate = new Date(dateString);
   const formattedDate = orderDate.toLocaleString("en-US", {
@@ -16,28 +20,51 @@ const formatDateToReadable = (dateString) => {
 };
 
 const OrdersPage = () => {
-  const staticOrdersData = [
-    {
-      _id: "1234567890abcdef",
-      date: "2024-08-30T18:00:00Z",
-      orderPrice: "₹1000",
-      fullNameOrder: "Praveen 12",
-      email: "praveensaharan2002@gmail.com",
-      pickupAddress:
-        "MG Road Metro Station - Church Street Exit, 16-113, Church St, Haridevpur, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka, 560001, India",
-      deliveryAddress:
-        "Sujangarh Churu Rajasthan, Salasar, Gudabari, Rajasthan, 331506, India",
-      numberOfPackages: 1,
-      packageWeight: 20,
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const ordersData = staticOrdersData;
+  const { session } = useSession();
+
+  useEffect(() => {
+    const fetchOrdersData = async () => {
+      if (session) {
+        try {
+          const token = await session.getToken();
+          const response = await fetch(`${BaseUrl}/getorders`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch orders data");
+          }
+
+          const data1 = await response.json();
+          setData(data1);
+        } catch (error) {
+          console.error("Error fetching orders data:", error.message);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchOrdersData();
+  }, [session]);
+
+  if (loading) {
+    return (
+      <div className="h-40">
+        <Spin />
+      </div>
+    );
+  }
 
   return (
     <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto mt-16">
       <h1 className="font-bold mb-5">Your Orders</h1>
-      {ordersData.length === 0 ? (
+      {data.length === 0 ? (
         <div className="bg-gray-100 h-screen mt-10">
           <div className="bg-white p-6 md:mx-auto">
             <svg
@@ -61,13 +88,13 @@ const OrdersPage = () => {
         </div>
       ) : (
         <ul className="space-y-8">
-          {ordersData.map((order) => (
+          {data.map((order) => (
             <div className="border-2 p-4 bg-white rounded-2xl" key={order._id}>
               <li>
                 <div className="flex">
                   <div className="flex-1 justify-start items-start space-y-2 flex-col">
                     <h1 className="text-3xl lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
-                      Order #{order._id.slice(-7)}
+                      Order #{order.id.slice(-7)}
                     </h1>
                     <p className="text-base font-medium leading-6 text-gray-600">
                       {formatDateToReadable(order.date)}
@@ -75,7 +102,7 @@ const OrdersPage = () => {
                   </div>
                   <div className="flex-1 justify-end items-end space-y-2 flex-col">
                     <p className="text-base font-medium leading-6 text-gray-600">
-                      Payment ID: #{order._id.slice(7)}
+                      Payment ID: #{order.id.slice(7)}
                     </p>
                   </div>
                 </div>
@@ -93,7 +120,7 @@ const OrdersPage = () => {
                             Total
                           </p>
                           <p className="text-base font-semibold leading-4 text-gray-600">
-                            {order.orderPrice}
+                            {order.order_price}
                           </p>
                         </div>
                         <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-0 xl:mt-5">
@@ -101,7 +128,7 @@ const OrdersPage = () => {
                             Shipping Address
                           </p>
                           <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                            {order.deliveryAddress}
+                            {order.delivery_address}
                           </p>
                         </div>
                       </div>
@@ -141,7 +168,7 @@ const OrdersPage = () => {
                         <div className="flex justify-center w-full md:justify-start items-center space-x-4 border-b border-gray-200">
                           <div className="flex justify-start items-start flex-col">
                             <p className="text-base font-semibold text-left text-gray-800">
-                              {order.fullNameOrder}
+                              {order.full_name_order}
                             </p>
                           </div>
                         </div>
@@ -176,7 +203,7 @@ const OrdersPage = () => {
                             Number of Packages
                           </p>
                           <p className="text-sm leading-5 text-gray-600">
-                            {order.numberOfPackages}
+                            {order.number_of_packages}
                           </p>
                         </div>
                       </div>
@@ -187,7 +214,7 @@ const OrdersPage = () => {
                               Pickup Address
                             </p>
                             <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                              {order.pickupAddress}
+                              {order.pickup_address}
                             </p>
                           </div>
                         </div>
@@ -196,7 +223,7 @@ const OrdersPage = () => {
                             Package Weight
                           </p>
                           <p className="text-sm leading-5 text-gray-600">
-                            {order.packageWeight} kg
+                            {order.package_weight} kg
                           </p>
                         </div>
                       </div>

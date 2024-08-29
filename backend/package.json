@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "smle",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,5 +7,16 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@clerk/clerk-sdk-node": "^5.0.20",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14",
+    "nodemon": "^3.1.4",
+    "postgres": "^3.4.4"
+  }
 }
