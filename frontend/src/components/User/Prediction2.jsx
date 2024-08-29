@@ -150,7 +150,7 @@ const Prediction = () => {
     const valuesWithDistance = { ...values, Distance: distance };
     console.log(valuesWithDistance);
 
-    fetch("http://127.0.0.1:8000/predict", {
+    fetch("https://logistics-price-prediction-1-latest.onrender.com/predict", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -160,7 +160,7 @@ const Prediction = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const price = data.prediction[0];
+        const price = data.prediction;
         setPredictedPrice(price);
         notification.success({
           message: "Prediction Success",

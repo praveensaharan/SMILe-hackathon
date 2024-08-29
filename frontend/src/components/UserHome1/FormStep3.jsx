@@ -4,8 +4,8 @@ import debounce from "lodash/debounce"; // Ensure lodash is installed for deboun
 
 const FormStep3 = ({
   formData,
-  handleAddressChange,
   handleChange,
+  handleChange1,
   handlePackageDetailsChange,
 }) => {
   const [deliveryQuery, setDeliveryQuery] = useState("");
@@ -33,16 +33,12 @@ const FormStep3 = ({
         ).values()
       );
 
-      if (type === "origin") {
-        setOriginSuggestions(uniqueSuggestions);
-      } else if (type === "delivery") {
+      if (type === "delivery") {
         setDeliverySuggestions(uniqueSuggestions);
       }
     } catch (error) {
       console.error("Error fetching suggestions:", error);
-      if (type === "origin") {
-        setOriginSuggestions([]);
-      } else if (type === "delivery") {
+      if (type === "delivery") {
         setDeliverySuggestions([]);
       }
     }
@@ -58,34 +54,24 @@ const FormStep3 = ({
     fetchSuggestions(deliveryQuery, "delivery");
     setDeliverySuggestionVisible(true);
 
-    // Cleanup function to cancel debounced fetch
     return () => {
       fetchSuggestions.cancel();
     };
   }, [deliveryQuery]);
 
   const handleSuggestionClick = (suggestion, type) => {
-    const location = suggestion.geometry.location;
-    const selectedPlace = {
-      description: suggestion.description,
-      lat: location.lat,
-      lng: location.lng,
-    };
-
-    if (type === "origin") {
-      setOriginQuery(suggestion.description);
-      handleAddressChange(
-        { target: { name: "line1", value: suggestion.description } },
-        "pickupAddress"
-      );
-      setOriginSuggestions([]);
-      setOriginSuggestionVisible(false);
-    } else if (type === "delivery") {
+    if (type === "delivery") {
+      const location = suggestion.geometry?.location || {};
       setDeliveryQuery(suggestion.description);
-      handleAddressChange(
-        { target: { name: "line1", value: suggestion.description } },
-        "deliveryAddress"
-      );
+
+      // Update formData
+      handleChange1({
+        target: {
+          name: "deliveryAddress",
+          value: `${suggestion.description}++--${location.lat}++--${location.lng}`,
+        },
+      });
+
       setDeliverySuggestions([]);
       setDeliverySuggestionVisible(false);
     }
@@ -109,10 +95,9 @@ const FormStep3 = ({
             type="text"
             id="deliveryAddressLine1"
             name="line1"
-            value={formData.deliveryAddress.line1 || deliveryQuery}
+            value={formData.deliveryAddress || deliveryQuery}
             onChange={(e) => {
               setDeliveryQuery(e.target.value);
-              handleAddressChange(e, "deliveryAddress");
             }}
             placeholder="Enter delivery address"
             className="w-full p-3 border border-lightgray rounded-lg focus:outline-none focus:border-blue-600"
@@ -178,7 +163,6 @@ const FormStep3 = ({
             required
           />
         </div>
-        {/* Repeat similar input fields for other package details */}
       </fieldset>
     </div>
   );

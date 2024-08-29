@@ -6,7 +6,6 @@ const FormStep4 = ({ formData, handleChange, handleSpecialHandlingChange }) => (
       Service Information & Special Handling
     </h2>
 
-    {/* Service Type Section */}
     <div className="mb-6">
       <label className="block text-sm font-medium mb-2 text-darkgray">
         Service Type
@@ -26,7 +25,6 @@ const FormStep4 = ({ formData, handleChange, handleSpecialHandlingChange }) => (
       </select>
     </div>
 
-    {/* Special Handling Requirements Section */}
     <fieldset className="mb-6">
       <legend className="text-lg font-semibold mb-4 text-blue-600">
         Special Handling Requirements
@@ -56,7 +54,6 @@ const FormStep4 = ({ formData, handleChange, handleSpecialHandlingChange }) => (
       </div>
     </fieldset>
 
-    {/* Special Handling Selection Section */}
     <div className="mb-6">
       <label
         htmlFor="specialHandlingSelect"

@@ -1,11 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Spin } from "antd";
 import { useUser } from "@clerk/clerk-react";
+import RouteMap from "./Map";
 
 const FormStep1 = ({ formData, handleChange }) => {
   const { user, isLoaded } = useUser();
   const [loading, setLoading] = useState(true);
+  // const origin = {
+  //   description:
+  //     "Allen Career Institute, Noida, C Block, Phase 2, Industrial Area, Sector 62, Noida, Uttar Pradesh, 201309, India",
+  //   lat: "28.6148",
+  //   lng: "77.36342",
+  // };
 
+  // const destination = {
+  //   description:
+  //     "Bukai Reson Shop, CRP Rd, Potoldanga, Maheshtala, West Bengal, 700141, India",
+  //   lat: "22.49296",
+  //   lng: "88.24545",
+  // };
   useEffect(() => {
     if (isLoaded && user) {
       const initialValues = {
@@ -75,6 +88,9 @@ const FormStep1 = ({ formData, handleChange }) => {
           required
         />
       </div>
+      {/* <div className="mt-8 w-full max-w-2xl">
+        <RouteMap origin={origin} destination={destination} />
+      </div> */}
     </div>
   );
 };
