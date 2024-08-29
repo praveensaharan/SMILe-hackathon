@@ -17,6 +17,7 @@ import NotExist from "./components/NotExist";
 import AdminDashboard from "./components/Admin/Dashboard";
 import UserDashboard from "./components/User/Dashboard";
 import Prediction from "./components/User/Prediction2";
+import FormSubmission from "./components/User/FormSubmission";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/form" element={<UserForm />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/submission" element={<FormSubmission />} />
           <Route path="*" element={<NotExist />} />
         </Routes>
       </div>

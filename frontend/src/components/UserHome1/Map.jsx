@@ -6,7 +6,6 @@ import polyline from "@mapbox/polyline";
 import { Spin } from "antd";
 
 const RouteMap = ({ origin, destination }) => {
-  console.log(origin, destination);
   const mapContainerRef = useRef(null);
   const [distance, setDistance] = useState(null);
   const originMarkerRef = useRef(null);

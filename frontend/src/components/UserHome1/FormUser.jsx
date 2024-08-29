@@ -5,10 +5,12 @@ import FormStep3 from "./FormStep3";
 import FormStep4 from "./FormStep4";
 import FormSubmission from "./FormData";
 import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const FormUser = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
@@ -21,11 +23,12 @@ const FormUser = () => {
     deliveryAddresslng: "",
     deliveryAddresslat: "",
     packageDetails: {
-      numberOfPackages: "",
-      packageWeight: "",
+      numberOfPackages: "1",
+      packageWeight: "20",
     },
     serviceType: "",
     specialHandling: [],
+    specialHandlingNeeded: "",
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -113,7 +116,9 @@ const FormUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setFormSubmitted(true);
+      console.log(formData);
+      navigate("/submission", { state: { formData } });
+      // setFormSubmitted(true);
     }
   };
 
@@ -123,77 +128,76 @@ const FormUser = () => {
   return (
     <div className="bg-gradient-to-r from-blue-200 to-indigo-300 min-h-screen flex items-center justify-center py-12 px-4">
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8">
-        {!formSubmitted ? (
-          <>
-            <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">
-              Logistics Booking Form
-            </h2>
-            <form onSubmit={handleSubmit}>
-              {currentStep === 1 && (
-                <FormStep1
-                  formData={formData}
-                  handleChange={handleChange}
-                  formErrors={formErrors}
-                />
-              )}
-              {currentStep === 2 && (
-                <FormStep2
-                  formData={formData}
-                  handleChange={handleChange}
-                  handleChange2={handleChange2}
-                  formErrors={formErrors}
-                />
-              )}
-              {currentStep === 3 && (
-                <FormStep3
-                  formData={formData}
-                  handleChange={handleChange}
-                  handleChange1={handleChange1}
-                  handlePackageDetailsChange={handlePackageDetailsChange}
-                  formErrors={formErrors}
-                />
-              )}
-              {currentStep === 4 && (
-                <FormStep4
-                  formData={formData}
-                  handleChange={handleChange}
-                  handleSpecialHandlingChange={handleSpecialHandlingChange}
-                  formErrors={formErrors}
-                />
-              )}
+        <>
+          <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">
+            Logistics Booking Form
+          </h2>
+          <form onSubmit={handleSubmit}>
+            {currentStep === 1 && (
+              <FormStep1
+                formData={formData}
+                handleChange={handleChange}
+                formErrors={formErrors}
+              />
+            )}
+            {currentStep === 2 && (
+              <FormStep2
+                formData={formData}
+                handleChange={handleChange}
+                handleChange2={handleChange2}
+                formErrors={formErrors}
+              />
+            )}
+            {currentStep === 3 && (
+              <FormStep3
+                formData={formData}
+                handleChange={handleChange}
+                handleChange1={handleChange1}
+                handlePackageDetailsChange={handlePackageDetailsChange}
+                formErrors={formErrors}
+              />
+            )}
+            {currentStep === 4 && (
+              <FormStep4
+                formData={formData}
+                handleChange={handleChange}
+                handleSpecialHandlingChange={handleSpecialHandlingChange}
+                formErrors={formErrors}
+              />
+            )}
 
-              <div className="flex justify-between mt-6">
-                {currentStep > 1 && (
-                  <button
-                    type="button"
-                    onClick={handlePrevious}
-                    className="bg-lightgray hover:bg-lightblue text-darkgray font-bold py-2 px-4 rounded-lg transition duration-300"
-                  >
-                    Previous
-                  </button>
-                )}
-                {currentStep < 4 ? (
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="bg-blue-500 hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                  >
-                    Next
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                  >
-                    Submit
-                  </button>
-                )}
-              </div>
-            </form>
-          </>
-        ) : (
+            <div className="flex justify-between mt-6">
+              {currentStep > 1 && (
+                <button
+                  type="button"
+                  onClick={handlePrevious}
+                  className="bg-lightgray hover:bg-lightblue text-darkgray font-bold py-2 px-4 rounded-lg transition duration-300"
+                >
+                  Previous
+                </button>
+              )}
+              {currentStep < 4 ? (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="bg-blue-500 hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-darkgray text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          </form>
+        </>
+        {/* ) : (
           <FormSubmission formData={formData} />
-        )}
+        )} */}
       </div>
     </div>
   );
