@@ -139,6 +139,7 @@ const FormStep3 = ({
             type="number"
             id="numberOfPackages"
             name="numberOfPackages"
+            default="1"
             value={formData.packageDetails.numberOfPackages || ""}
             onChange={(e) => handlePackageDetailsChange(e, "numberOfPackages")}
             className="w-full p-3 border border-lightgray rounded-lg focus:outline-none focus:border-blue-600"

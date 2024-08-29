@@ -150,7 +150,7 @@ const Prediction = () => {
     const valuesWithDistance = { ...values, Distance: distance };
     console.log(valuesWithDistance);
 
-    fetch("https://logistics-price-prediction-1-latest.onrender.com/predict", {
+    fetch("https://hello-xx4atey7ia-uc.a.run.app/predict", {
       method: "POST",
       headers: {
         Accept: "application/json",

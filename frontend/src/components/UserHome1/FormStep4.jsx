@@ -19,9 +19,9 @@ const FormStep4 = ({ formData, handleChange, handleSpecialHandlingChange }) => (
         required
       >
         <option value="">Select Service Type</option>
-        <option value="standard">Standard Shipping</option>
-        <option value="expedited">Expedited Shipping</option>
-        <option value="overnight">Overnight Shipping</option>
+        <option value="1">Standard Shipping</option>
+        <option value="2">Expedited Shipping</option>
+        <option value="3">Overnight Shipping</option>
       </select>
     </div>
 
@@ -70,8 +70,8 @@ const FormStep4 = ({ formData, handleChange, handleSpecialHandlingChange }) => (
         required
       >
         <option value="">Select Option</option>
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
+        <option value="0">No</option>
+        <option value="1">Yes</option>
       </select>
     </div>
   </div>
