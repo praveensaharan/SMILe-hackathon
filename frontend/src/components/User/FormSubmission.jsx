@@ -221,6 +221,7 @@ const FormSubmission = () => {
   const [predictedPrice, setPredictedPrice] = useState(null);
   const [isPayModalVisible, setIsPayModalVisible] = useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const apiKey = import.meta.env.VITE_OLA_KEY;
 
   const formData = location.state?.formData || {};
 
@@ -240,7 +241,8 @@ const FormSubmission = () => {
     lat: formData.deliveryAddresslng,
     lng: formData.deliveryAddresslat,
   };
-  const apiKey = "bW9Vg3nH1MtEZpz9eLxrn2kJ8TsTOKZVh72yAw0h"; // Ensure the API key is correct
+
+  // Ensure the API key is correct
 
   useEffect(() => {
     const fetchRoute = async () => {
