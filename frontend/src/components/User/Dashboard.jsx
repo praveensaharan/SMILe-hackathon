@@ -1,27 +1,7 @@
 import React from "react";
 import { Card, List, Button } from "antd";
 import { ShoppingCartOutlined, CheckCircleOutlined } from "@ant-design/icons";
-
-const mockOrders = [
-  {
-    id: 1,
-    item: "Product A",
-    status: "Delivered",
-    date: "2024-08-20",
-  },
-  {
-    id: 2,
-    item: "Product B",
-    status: "In Transit",
-    date: "2024-08-18",
-  },
-  {
-    id: 3,
-    item: "Product C",
-    status: "Processing",
-    date: "2024-08-16",
-  },
-];
+import OrdersPage from "./order";
 
 const features = [
   {
@@ -46,29 +26,6 @@ const Dashboard = () => {
     <div className="bg-gray-100 min-h-screen p-6">
       <h1 className="text-4xl font-bold text-center mb-10">User Dashboard</h1>
 
-      {/* Orders Section */}
-      <div className="mb-10">
-        <h2 className="text-2xl font-semibold mb-4">Your Orders</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockOrders.map((order) => (
-            <Card
-              key={order.id}
-              title={order.item}
-              extra={<span className="text-sm">{order.status}</span>}
-              className="hover:shadow-lg transition-shadow duration-300"
-            >
-              <p>
-                <strong>Date:</strong> {order.date}
-              </p>
-              <Button type="primary" className="mt-4 w-full">
-                View Details
-              </Button>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {/* Features Section */}
       <div>
         <h2 className="text-2xl font-semibold mb-4">Features of Our WebApp</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -83,6 +40,9 @@ const Dashboard = () => {
             </Card>
           ))}
         </div>
+      </div>
+      <div className="mb-10">
+        <OrdersPage />
       </div>
     </div>
   );
