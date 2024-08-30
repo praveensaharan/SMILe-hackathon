@@ -12,6 +12,7 @@ import RoleBasedRoute from "./components/RoleBasedRoute";
 import Home from "./components/Home";
 import Footer from "./components/HomeSection/Footer";
 import UserForm from "./components/UserHome1/FormUser";
+import Predictio from "./components/User/Prediction";
 import DemoMap from "./components/Demomap";
 import NotExist from "./components/NotExist";
 import AdminDashboard from "./components/Admin/Dashboard";
@@ -37,7 +38,7 @@ function App() {
           />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signin />} />
-          <Route path="/form" element={<UserForm />} />
+          <Route path="/form" element={<Predictio />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/user/dashboard" element={<UserDashboard />} />
           <Route path="/submission" element={<FormSubmission />} />

@@ -41,12 +41,6 @@ const Nav = () => {
               icon={<FaHome />}
               currentPath={currentPath}
             />
-            <NavLink
-              to="/predictor"
-              label="Predictor"
-              icon={<FaUserPlus />}
-              currentPath={currentPath}
-            />
           </div>
           <div className="flex items-center justify-end gap-3">
             <SignedOut>
@@ -80,13 +74,6 @@ const Nav = () => {
             to="/"
             label="Home"
             icon={<FaHome />}
-            currentPath={currentPath}
-            onClick={() => setToggleMenu(false)}
-          />
-          <NavLink
-            to="/predictor"
-            label="Predictor"
-            icon={<FaUserPlus />}
             currentPath={currentPath}
             onClick={() => setToggleMenu(false)}
           />

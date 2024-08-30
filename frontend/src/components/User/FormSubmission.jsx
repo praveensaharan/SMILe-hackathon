@@ -5,6 +5,7 @@ import Map from "../UserHome1/Map";
 import { useSession } from "@clerk/clerk-react";
 import { Spin, message } from "antd";
 import axios from "axios";
+import dayjs from "dayjs";
 const BaseUrl = "https://backend-peach-theta.vercel.app";
 // const BaseUrl = "http://localhost:3000";
 
@@ -253,7 +254,9 @@ const FormSubmission = () => {
         <div className="mt-6 lg:flex lg:items-start lg:gap-12 px-4">
           <div className="flex-1 space-y-8">
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-800">Details</h2>
+              <h2 className="text-xl font-semibold text-gray-800 justify-center items-center">
+                Details
+              </h2>
               <div className="rounded-lg border border-gray-300 bg-white p-4">
                 <Descriptions
                   column={1}
