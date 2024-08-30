@@ -5,6 +5,7 @@ const {
   getOrders,
   addcancelorders,
   addorders,
+  calculateMetrics,
 } = require("./utils");
 
 const router = express.Router();
@@ -97,6 +98,35 @@ router.post("/cancelorders", ClerkExpressRequireAuth({}), async (req, res) => {
     });
   } catch (err) {
     console.error("Error handling canceled order:", err);
+    res.status(500).json({ error: "Internal Server Error: " + err.message });
+  }
+});
+
+router.get("/calculatedmetrics", async (req, res) => {
+  // Uncomment the following code if you need authentication
+  /*
+  if (!req.auth || !req.auth.userId) {
+    return res.status(401).json({ error: "Unauthenticated!" });
+  }
+
+  try {
+    const user = await clerkClient.users.getUser(req.auth.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error("Error fetching user: ", err);
+    return res.status(500).json({ error: "Internal Server Error: " + err.message });
+  }
+  */
+
+  try {
+    const result = await calculateMetrics();
+    res.status(200).json({
+      metrics: result,
+    });
+  } catch (err) {
+    console.error("Error calculating metrics: ", err);
     res.status(500).json({ error: "Internal Server Error: " + err.message });
   }
 });
