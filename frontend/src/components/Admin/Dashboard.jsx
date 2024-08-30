@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { Spin, Alert, message as antdMessage } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import Content from "./Content";
 
 const Dashboard = () => {
@@ -12,7 +13,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Wait until everything is loaded and authenticated
     if (isLoaded) {
       if (isSignedIn) {
         if (user && user.publicMetadata.role !== "admin") {
@@ -28,17 +28,34 @@ const Dashboard = () => {
   }, [isLoaded, isSignedIn, user, signOut, navigate]);
 
   if (!isLoaded) {
-    return <div>Loading...</div>; // Optionally show a loading state
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <Spin indicator={antIcon} size="large" tip="Loading Dashboard..." />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <Alert
+          message="Access Denied"
+          description={error}
+          type="error"
+          showIcon
+          className="max-w-sm"
+        />
+      </div>
+    );
   }
 
   return (
-    <>
-      <Content />
-    </>
+    <div className="min-h-screen bg-gray-100  p-8">
+      <div className="max-w-5xl mx-auto">
+        <Content />
+      </div>
+    </div>
   );
 };
 
