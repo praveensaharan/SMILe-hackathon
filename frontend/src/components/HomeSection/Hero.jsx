@@ -22,7 +22,7 @@ function Hero() {
         </p>
 
         <Link
-          to="/"
+          to="/signin"
           className="relative inline-flex items-center justify-center px-10 py-4 overflow-hidden font-mono font-medium tracking-tighter text-white bg-orange-400 rounded-2xl group"
         >
           <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-[#27374D] rounded-full group-hover:w-56 group-hover:h-56"></span>
