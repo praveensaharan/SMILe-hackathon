@@ -3,6 +3,7 @@ const sql = require("./db");
 const axios = require("axios");
 const { EMAIL_VERIFY } = require("./envSetup");
 const { sendSessionEmails } = require("./email");
+const { clerkClient } = require("./clerk");
 
 async function getPgVersion() {
   try {
@@ -162,6 +163,60 @@ async function addorders(orderData) {
 }
 
 // Function to send emails with session details
+
+async function calculateMetrics() {
+  try {
+    const ordersResult = await sql`
+      SELECT 
+        SUM(order_price) AS total_revenue, 
+        SUM(distance) AS total_distance, 
+        COUNT(*) AS total_orders 
+      FROM orders;
+    `;
+
+    const canceledOrdersResult = await sql`
+      SELECT COUNT(*) AS total_canceled_orders 
+      FROM canceled_orders;
+    `;
+
+    const userCount = await clerkClient.users.getCount();
+
+    const totalRevenue = parseFloat(ordersResult[0]?.total_revenue) || 0;
+    const totalDistance = parseFloat(ordersResult[0]?.total_distance) || 0;
+    const totalOrders = parseInt(ordersResult[0]?.total_orders) || 0;
+    const totalCanceledOrders =
+      parseInt(canceledOrdersResult[0]?.total_canceled_orders) || 0;
+
+    const avgDistancePerOrder =
+      totalOrders > 0 ? totalDistance / totalOrders : 0;
+    const avgSalePerOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+    const abandonedCartRate = parseFloat(
+      totalOrders + totalCanceledOrders > 0
+        ? (
+            (totalCanceledOrders / (totalOrders + totalCanceledOrders)) *
+            100
+          ).toFixed(2)
+        : 0
+    );
+
+    const metrics = {
+      totalRevenue,
+      totalBookings: totalOrders,
+      totalSales: totalRevenue,
+      checkedPriceButDidntOrder: totalCanceledOrders,
+      avgSalePerOrder: parseFloat(avgSalePerOrder.toFixed(2)),
+      avgDistancePerOrder: parseFloat(avgDistancePerOrder.toFixed(2)),
+      abandonedCartRate,
+      totalUsers: userCount,
+    };
+
+    return metrics;
+  } catch (error) {
+    console.error("Error calculating metrics:", error.message);
+    throw new Error("Internal Server Error");
+  }
+}
+
 async function emailssend(mentor_email, user_email, date, time, duration) {
   try {
     const formattedTime = formatTimeTo12Hour(time); // Format the time to 12-hour format
@@ -266,4 +321,5 @@ module.exports = {
   addcancelorders,
   addorders,
   getpaymentDone,
+  calculateMetrics,
 };
