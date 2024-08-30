@@ -147,8 +147,8 @@ const Prediction = () => {
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="p-4 w-full max-w-4xl">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-200 to-indigo-300 py-20">
+        <div className="px-10 py-6 w-full max-w-4xl bg-white rounded-xl">
           <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
             Book Now At Best Value
           </h2>
