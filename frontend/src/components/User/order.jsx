@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "@clerk/clerk-react";
 import { Spin } from "antd";
 const BaseUrl = "https://backend-peach-theta.vercel.app";
+// const BaseUrl = "http://localhost:3000";
 
 // Date formatting function
 const formatDateToReadable = (dateString) => {
@@ -55,8 +56,13 @@ const OrdersPage = () => {
 
   if (loading) {
     return (
-      <div className="h-40">
-        <Spin />
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <Spin
+          size="large"
+          className="flex justify-center items-center"
+          tip="Loading your orders..."
+          style={{ color: "#4A90E2", fontSize: "20px" }}
+        />
       </div>
     );
   }
@@ -89,20 +95,20 @@ const OrdersPage = () => {
       ) : (
         <ul className="space-y-8">
           {data.map((order) => (
-            <div className="border-2 p-4 bg-white rounded-2xl" key={order._id}>
+            <div className="border-2 p-4 bg-white rounded-2xl" key={order.id}>
               <li>
                 <div className="flex">
                   <div className="flex-1 justify-start items-start space-y-2 flex-col">
                     <h1 className="text-3xl lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
-                      Order #{order.id.slice(-7)}
+                      Order #{order.unique_order_id.slice(-7)}
                     </h1>
                     <p className="text-base font-medium leading-6 text-gray-600">
-                      {formatDateToReadable(order.date)}
+                      {formatDateToReadable(order.order_date)}
                     </p>
                   </div>
                   <div className="flex-1 justify-end items-end space-y-2 flex-col">
                     <p className="text-base font-medium leading-6 text-gray-600">
-                      Payment ID: #{order.id.slice(7)}
+                      Payment ID: #{order.unique_order_id.slice(7)}
                     </p>
                   </div>
                 </div>
