@@ -53,7 +53,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-4 md:p-8 flex flex-col items-center">
+    <div className=" min-h-screen p-4 md:p-8 flex flex-col items-center">
       <h1 className="text-2xl md:text-4xl font-bold mb-8">Admin Dashboard</h1>
 
       <Row gutter={[16, 16]} className="mb-6 w-full max-w-screen-lg">
