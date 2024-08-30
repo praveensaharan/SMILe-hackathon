@@ -42,12 +42,12 @@ const Navbar = () => {
               icon={<FaHome />}
               currentPath={currentPath}
             />
-            <NavLink
+            {/* <NavLink
               to="/predictor"
               label="Predictor"
               icon={<FaUserPlus />}
               currentPath={currentPath}
-            />
+            /> */}
 
             <NavLink
               to="/form"
@@ -91,13 +91,13 @@ const Navbar = () => {
             currentPath={currentPath}
             onClick={() => setToggleMenu(false)}
           />
-          <NavLink
+          {/* <NavLink
             to="/predictor"
             label="Predictor"
             icon={<FaUserPlus />}
             currentPath={currentPath}
             onClick={() => setToggleMenu(false)}
-          />
+          /> */}
 
           <NavLink
             to="/form"
