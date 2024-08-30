@@ -236,7 +236,17 @@ const FormSubmission = () => {
   const handleCancelModal = () => {
     setIsCancelModalVisible(false);
   };
-
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <Spin
+          size="large"
+          tip="Loading your orders..."
+          className="text-blue-500"
+        />
+      </div>
+    );
+  }
   return (
     <>
       <section className="bg-gradient-to-r from-blue-200 to-indigo-300 pt-20">
