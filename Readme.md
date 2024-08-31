@@ -148,7 +148,7 @@ If you encounter any issues during installation or while running the project, co
 
 ## Acknowledgements
 
-- Thanks to Shree Maruti Integrated Logistics Limited for providing this opportunity to build a meaningful project through the hackathon.
+- Thanks to **Shree Maruti Integrated Logistics** Limited for providing this opportunity to build a meaningful project through the hackathon.
 ## Screenshots
 
 ### Login Page
