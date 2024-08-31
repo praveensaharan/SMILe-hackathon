@@ -1,8 +1,6 @@
-![LogiPredict](./frontend/public/logo-no-background.png)
-
 # SMILe Hackathon Project (Team: Deqoders)
 
-<img src="./frontend/public/logo-no-background.png" alt="LogiPredict" height="200px">
+<img src="./frontend/public/logo-no-background.png" alt="LogiPredict" height="50px">
 
 ## Overview
 
