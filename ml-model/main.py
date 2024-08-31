@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -9,15 +7,14 @@ import pandas as pd
 import pickle
 from BankNotes import BankNote
 
-
 app = FastAPI()
 
-# Configure CORS to allow all origins
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
 
@@ -66,6 +63,7 @@ def predict_price(data: BankNote):
         if SpecialHandling not in valid_special_handling:
             raise HTTPException(status_code=400, detail=f"Invalid SpecialHandling: {
                                 SpecialHandling}. Must be one of {valid_special_handling}")
+
         if NumPackages <= 0:
             raise HTTPException(
                 status_code=400, detail="NumPackages must be greater than 0")
@@ -78,10 +76,14 @@ def predict_price(data: BankNote):
 
         input_data_reshaped = scaler.transform(input_data)
         prediction = lr_model.predict(input_data_reshaped)
-        return {'prediction': prediction.tolist()}
+
+        # Round the prediction to the nearest whole number
+        rounded_prediction = round(prediction[0])
+
+        return {'prediction': rounded_prediction}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host='127.0.0.1', port=8000)

@@ -56,7 +56,7 @@ const OrdersPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex justify-center items-center min-h-screen">
         <Spin
           size="large"
           tip="Loading your orders..."
@@ -67,10 +67,11 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="py-8 px-4">
-      <h1 className="text-4xl font-extrabold text-gray-800 mb-6">
-        Your Orders
-      </h1>
+    <div className="py-1 px-4">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-7">
+        Previous Bookings
+      </h2>
+
       {data.length === 0 ? (
         <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
           <div className="text-center">

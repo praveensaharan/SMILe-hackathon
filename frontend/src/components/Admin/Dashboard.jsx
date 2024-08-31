@@ -51,7 +51,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-200 to-indigo-300 py-8">
+    <div className="min-h-screen bg-gradient-to-r from-blue-200 to-indigo-300 pb-8">
       <div className="max-w-5xl mx-auto">
         <Content />
       </div>

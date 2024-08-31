@@ -147,10 +147,10 @@ const Prediction = () => {
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-200 to-indigo-300 py-20">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-200 to-indigo-300 py-10 px-5 md:px-0">
         <div className="px-10 py-6 w-full max-w-4xl bg-white rounded-xl">
           <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-            Book Now At Best Value
+            Book a Shipment
           </h2>
 
           <Form
@@ -176,7 +176,7 @@ const Prediction = () => {
               >
                 <Input
                   className="w-full rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-600 transition duration-300"
-                  placeholder="John Doe"
+                  placeholder="Enter Name"
                 />
               </Form.Item>
 
@@ -216,13 +216,13 @@ const Prediction = () => {
               </Form.Item>
               <div className="relative mb-4">
                 <label className="block text-gray-700 font-medium mb-2">
-                  Origin
+                  Pickup
                 </label>
                 <input
                   type="text"
                   value={originQuery}
                   onChange={(e) => setOriginQuery(e.target.value)}
-                  placeholder="Enter origin address"
+                  placeholder="Enter pickup address"
                   className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 transition duration-300"
                 />
                 {isOriginSuggestionVisible && originSuggestions.length > 0 && (
@@ -396,20 +396,20 @@ const Prediction = () => {
                     </>
                   )}
                 >
-                  <Option value={1}>Under 1kg</Option>
-                  <Option value={2}>Under 2kg</Option>
-                  <Option value={3}>Under 3kg</Option>
+                  <Option value={5}>Under 5kg</Option>
+                  <Option value={10}>Under 10kg</Option>
+                  <Option value={15}>Under 15kg</Option>
                 </Select>
               </Form.Item>
             </div>
 
-            <Form.Item className="mt-8">
+            <Form.Item className="mt-2 flex items-center justify-center">
               <Button
                 type="primary"
                 htmlType="submit"
-                className="bg-indigo-500 hover:bg-indigo-600 text-white p-4 rounded-lg shadow-md transition duration-300"
+                className="bg-indigo-500 hover:bg-indigo-900 text-white px-10 py-5 rounded-xl shadow-md transition duration-300"
               >
-                Book
+                Book Shipment
               </Button>
             </Form.Item>
           </Form>
