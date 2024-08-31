@@ -9,7 +9,7 @@ const UserLogin = () => {
   };
 
   return (
-    <div className=" text-white p-10 min-h-screen flex flex-col justify-center items-center">
+    <div className=" text-white p-10 min-h-screen flex justify-center">
       <div className="max-w-md w-full">
         <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-900">
           {activeComponent === "signin" ? "User Sign In" : "New User? Sign Up"}
