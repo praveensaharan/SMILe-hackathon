@@ -45,7 +45,7 @@ const Signin = () => {
           <div className="flex flex-col items-center p-6">
             <AdminLogin />
           </div>
-          <div className="flex flex-col items-center p-3">
+          <div className="flex flex-col items-center px-3 py-0">
             <UserLogin />
           </div>
         </div>
