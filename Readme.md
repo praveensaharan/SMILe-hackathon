@@ -1,6 +1,8 @@
+![LogiPredict](./frontend/public/logo-no-background.png)
+
 # SMILe Hackathon Project (Team: Deqoders)
 
-![LogiPredict](./frontend/public/logo-no-background.png)
+<img src="./frontend/public/logo-no-background.png" alt="LogiPredict" height="200px">
 
 ## Overview
 
@@ -135,6 +137,8 @@ If you encounter any issues during installation or while running the project, co
 ## Contributors
 
 - **Praveen Saharan** - [GitHub](https://github.com/praveensaharan)
+- **Aman Prajapati** - [GitHub](https://github.com/praveensaharan)
+- **Priya Aggarwal** - [GitHub](https://github.com/Blueberrysmash)
 
 ## Contributing
 
@@ -149,5 +153,3 @@ If you encounter any issues during installation or while running the project, co
 - Thanks to Shree Maruti Integrated Logistics Limited for providing this opportunity to build a meaningful project through the hackathon.
 
 ![image](https://github.com/user-attachments/assets/eb17828f-ed36-4b03-a353-de4a8ec08c37)
-
-![alt text](image.png)
