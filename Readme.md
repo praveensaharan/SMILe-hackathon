@@ -149,5 +149,20 @@ If you encounter any issues during installation or while running the project, co
 ## Acknowledgements
 
 - Thanks to Shree Maruti Integrated Logistics Limited for providing this opportunity to build a meaningful project through the hackathon.
+## Screenshots
 
-![image](https://github.com/user-attachments/assets/eb17828f-ed36-4b03-a353-de4a8ec08c37)
+### Login Page
+<img src="https://github.com/user-attachments/assets/321d4179-e49d-4ab6-8718-da6ad6da8be6" alt="Login Page" width="600px">
+
+### Booking Form
+<img src="https://github.com/user-attachments/assets/03514e8a-e7e5-499e-bb85-f5d63915a2e5" alt="Booking Form" width="600px">
+
+### Booking Details
+<img src="https://github.com/user-attachments/assets/a4108fca-c0a9-45f3-bd3c-ebe76e06d6a8" alt="Booking Details" width="600px">
+
+### Map Based on the Order
+<img src="https://github.com/user-attachments/assets/cb8baecd-d289-496f-8dab-da387b57c038" alt="Map Based on the Order" width="600px">
+
+### Admin Dashboard
+<img src="https://github.com/user-attachments/assets/eb17828f-ed36-4b03-a353-de4a8ec08c37" alt="Admin Dashboard" width="600px">
+
