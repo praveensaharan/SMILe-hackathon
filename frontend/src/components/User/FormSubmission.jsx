@@ -4,8 +4,9 @@ import { Descriptions, notification, Modal, Button } from "antd";
 import Map from "../UserHome1/Map";
 import { useSession } from "@clerk/clerk-react";
 import { Spin, message } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 import axios from "axios";
-import dayjs from "dayjs";
+
 const BaseUrl = "https://backend-peach-theta.vercel.app";
 // const BaseUrl = "http://localhost:3000";
 
@@ -237,25 +238,36 @@ const FormSubmission = () => {
   const handleCancelModal = () => {
     setIsCancelModalVisible(false);
   };
+  // setLoading(true);
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-100">
-        <Spin
-          size="large"
-          tip="Loading your orders..."
-          className="text-blue-500"
-        />
+      <div className="flex flex-col justify-center items-center h-screen">
+        <div className="flex justify-between items-center w-full px-8">
+          <div className="flex items-center space-x-4">
+            <ShoppingCartOutlined
+              size="large"
+              className="text-blue-500 text-4xl"
+            />
+            <span className="text-lg font-medium">
+              Determining Your Optimal Price...
+            </span>
+            <Spin size="large" />
+          </div>
+        </div>
       </div>
     );
   }
   return (
     <>
-      <section className="bg-gradient-to-r from-blue-200 to-indigo-300 pt-20">
+      <section className="bg-gradient-to-r from-blue-200 to-indigo-300 py-2">
         <div className="mt-6 lg:flex lg:items-start lg:gap-12 px-4">
-          <div className="flex-1 space-y-8">
+          <div className="flex-1 space-y-8 mb-5 md:mb-0">
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-800 justify-center items-center">
-                Details
+              {/* <h2 className="text-xl font-semibold text-gray-800 justify-center items-center">
+                Booking Details
+              </h2> */}
+              <h2 className="text-2xl font-semibold text-gray-700 mb-8">
+                Shipment Details
               </h2>
               <div className="rounded-lg border border-gray-300 bg-white p-4">
                 <Descriptions
@@ -313,7 +325,7 @@ const FormSubmission = () => {
                       </span>
                     }
                   >
-                    <span className="text-gray-900">
+                    <span className="text-gray-900 capitalize">
                       {formData.pickupTimeWindow || "N/A"}
                     </span>
                   </Descriptions.Item>
@@ -363,16 +375,24 @@ const FormSubmission = () => {
             predictedPrice && (
               <div className="w-full space-y-6 lg:max-w-xs xl:max-w-md justify-center items-center my-auto bg-white p-6 rounded-xl text-black">
                 <div className="flow-root">
-                  <div className="-my-3 divide-y divide-gray-500">
-                    <dl className="flex items-center justify-between gap-4 py-3">
+                  <div className="divide-gray-500">
+                    <dl className="flex items-center justify-between gap-4 py-3  border-gray-300">
                       <dt className="text-base font-normal">Subtotal</dt>
                       <dd className="text-base font-medium">
-                        ₹{(predictedPrice + 5).toFixed(2)}
+                        ₹
+                        {(predictedPrice + 5).toFixed(2) -
+                          (0.18 * (predictedPrice + 5 - 5)).toFixed(3)}
                       </dd>
                     </dl>
-                    <dl className="flex items-center justify-between gap-4 py-3">
+                    <dl className="flex items-center justify-between gap-4 py-3  border-gray-300">
                       <dt className="text-base font-normal">Discount</dt>
-                      <dd className="text-base font-medium">-₹5</dd>
+                      <dd className="text-base font-medium">-₹5.00</dd>
+                    </dl>
+                    <dl className="flex items-center justify-between gap-4 py-3 border-b border-gray-300">
+                      <dt className="text-base font-normal">GST (18%)</dt>
+                      <dd className="text-base font-medium">
+                        ₹{(0.18 * (predictedPrice + 5 - 5)).toFixed(3)}
+                      </dd>
                     </dl>
                     <dl className="flex items-center justify-between gap-4 py-3">
                       <dt className="text-base font-bold">Total</dt>
