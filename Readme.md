@@ -1,117 +1,64 @@
+# SMILe Hackathon Project (Team: Deqoders)
 
-# CareerCarve 1x1 Scheduler
-
-![CareerCarve Logo](./public/logo.svg)
+![LogiPredict](./frontend/public/logo-no-background.png)
 
 ## Overview
 
-CareerCarve provides placement training to MBA students through various activities, including the 1x1 Mock Interview session. This project is designed to create an automated and user-friendly scheduler for students and mentors to book and manage their 1x1 sessions efficiently. Built with modern technologies such as React+Vite, Clerk, Neon, and Express, this project emphasizes a seamless experience for both students and mentors.
+**LogiPredict** optimizes logistics services by leveraging data-driven insights and machine learning. It offers tools for predictive pricing and A/B testing, helping businesses improve their logistics operations efficiently.
 
 ## Features
 
-### Student Features
+### User Features
 
 - **Home Screen**
-  - Overview of available services.
-  - Quick access to schedule a 1x1 session.
-  - Notifications about upcoming sessions or new features.
-  
+  - Overview of past bookings.
+  - Quick access to essential features for an improved booking experience.
 - **Login/Registration Page**
   - Secure sign-up and login options.
-  - Option to link with college email or other verification methods.
-  
-- **Profile Page**
-  - Manage personal information and preferences.
-  - Select area of interest and preferred mentors.
-  
-- **Schedule Session Page**
-  - **Area of Interest Selection**: Choose an area (e.g., FMCG Sales, Equity Research).
-  - **Mentor Selection**: Auto-assign or select a specific mentor.
-  - **Availability Checker**: Display available slots based on both student and mentor availability.
-  - **Duration Selection**: Choose session length (30, 45, or 60 minutes).
-  
-- **Payment Page**
-  - Display cost based on session duration and mentor selection.
-  - Secure payment gateway integration.
-  
-- **Confirmation Page**
-  - Summary of the scheduled session.
-  - Add session to personal calendar.
-  
-- **My Sessions Page**
-  - View upcoming and past sessions.
-  - Option to reschedule or cancel sessions.
-  
-- **Notifications**
-  - Reminders for upcoming sessions.
-  - Updates on any changes or cancellations.
-  
-- **Feedback Page**
-  - Provide feedback on the session and mentor.
+  - Google Sign-In option for easy access.
+- **Booking Page**
 
-### Mentor Features
+  - **Weight is Key**: Specify the weight of packages for accurate pricing.
+  - **Distance Matters**: Input the delivery distance to optimize route and cost.
+  - **Number of Packages**: Enter the number of packages to determine delivery slots.
+  - **Extra Care for Secure Delivery**: Options for enhanced security during delivery.
+  - **Shipping Types**: Choose from different shipping options based on urgency and cost.
+
+- **Confirmation Page**
+  - Summary of the booking order.
+  - Display the total cost based on the ML model's prediction.
+  - Show delivery route and tracking via Ola Maps API.
+
+### Admin Features
 
 - **Home Screen**
-  - Overview of upcoming and past sessions.
-  - Notifications about student bookings or changes.
-  
+  - Overview of all revenues and sales metrics.
+  - Key insights and metrics for data-driven decisions.
+  - Option to adjust the experiment-to-production ratio for the ML model.
 - **Login/Registration Page**
-  - Secure login options with profile verification.
-  
-- **Profile Page**
-  - Manage personal information and expertise.
-  - Set availability and area(s) of interest.
-  
-- **Availability Management Page**
-  - Set and update available time slots.
-  - Set preferences for back-to-back sessions.
-  
-- **Session Schedule Page**
-  - View and manage upcoming sessions.
-  - Option to accept or reschedule sessions.
-  
-- **Notifications**
-  - Alerts for new bookings or changes.
-  - Reminders for upcoming sessions.
-  
-- **Feedback Page**
-  - View feedback from students.
-  - Provide feedback on student sessions.
-
-### Shared Features
-
-- **Booking Management**
-  - Real-time synchronization to avoid double bookings.
-  - Automated conflict resolution based on priority rules.
-  
-- **Calendar Integration**
-  - Sync with Google Calendar, Outlook, etc., for both students and mentors.
-  
-- **Automated Reminders**
-  - Notifications sent via email/SMS for upcoming sessions, payment confirmations, and changes.
-  
-- **User Support**
-  - Help section or chat support for troubleshooting and queries.
+  - Secure login options for administrators.
 
 ## Tech Stack
 
 ### Frontend
 
 - **React + Vite**: Blazing-fast development with modern frontend tools.
+- **OLA Maps API**: For handling maps and location-based services.
 - **Clerk**: User authentication and management.
-- **Tailwind CSS**: For styling and responsive design.
-- **Moment.js**: Handling dates and times.
+- **Tailwind CSS**: Styling and responsive design.
+- **Moment.js**: For handling dates and times.
 
 ### Backend
 
 - **Express**: Node.js web framework for building the API.
-- **Neon**: PostgreSQL as a Service, for managing and querying the database.
+- **NeonDB (PostgreSQL)**: PostgreSQL as a Service for managing and querying the database.
 - **Axios**: For making HTTP requests from the frontend to the backend.
 
 ### Deployment
 
-- **Vercel**: Hosting and deployment for the frontend.
-
+- **Vercel**: Hosting and deployment for the frontend and backend.
+- **Google Cloud**: Hosting and deployment for the ML model.
+- **NeonDB**: Hosting and deployment for PostgreSQL.
 
 ## Setup and Installation
 
@@ -119,43 +66,75 @@ CareerCarve provides placement training to MBA students through various activiti
 
 - Node.js (>= 14.x)
 - npm or yarn
-- PostgreSQL (via Neon or local instance)
+- PostgreSQL (via NeonDB or local instance)
 
-### Installation Steps
+### Installation
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/praveensaharan/CareerCarve.git
-   cd CareerCarve
-   ```
+Follow the steps below to set up the project on your local machine.
 
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+#### 1. Clone the Repository
 
+```bash
+git clone https://github.com/praveensaharan/SMILe-hackathon.git
+cd SMILe-hackathon
+```
 
-
-4. **Run the Development Server**:
-   - **Frontend**:
-     ```bash
-     npm run dev
-     # or
-     yarn dev
-     ```
-
-
-5. **Access the App**:
-   - Frontend: `http://localhost:5173`
-
-
-### Deployment
+#### 2. Navigate to the Project Directory
 
 - **Frontend**:
-  - Deploy on Vercel with the necessary environment variables.
 
+  ```bash
+  cd frontend
+  ```
+
+- **Backend**:
+  ```bash
+  cd backend
+  ```
+
+#### 3. Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+#### 4. Run the Development Server
+
+- **Frontend**:
+
+  ```bash
+  npm run dev
+  # or
+  yarn dev
+  ```
+
+- **Backend**:
+  ```bash
+  node index.js
+  ```
+
+#### 5. Access the App
+
+- **Frontend**: Open your browser and navigate to `http://localhost:5173`
+- **Backend**: The backend server will be running at `http://localhost:3000`
+
+### Configuration
+
+Configurations for the application, such as environment variables, can be managed through `.env` files or directly within the configuration files in the frontend and backend directories.
+
+### Troubleshooting
+
+If you encounter any issues during installation or while running the project, consider the following:
+
+- Ensure all dependencies are installed by running `npm install` or `yarn install`.
+- Make sure that ports `5173` (frontend) and `3000` (backend) are not in use by other applications.
+- Check the terminal/console output for any error messages and resolve them as indicated.
+
+## Contributors
+
+- **Praveen Saharan** - [GitHub](https://github.com/praveensaharan)
 
 ## Contributing
 
@@ -165,24 +144,9 @@ CareerCarve provides placement training to MBA students through various activiti
 4. Push to the branch (`git push origin feature-branch`).
 5. Open a Pull Request.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
-
 ## Acknowledgements
 
-- Thanks to CareerCarve for providing this opportunity to build a meaningful project.
-- Special thanks to the mentors and students who provided feedback and helped improve the scheduler.
-
-![image](https://github.com/user-attachments/assets/572af2b6-2370-40d8-9d8b-8729409de3a1)
-![image](https://github.com/user-attachments/assets/c1ecfa70-4ff2-40cb-a49e-0e05af3320b8)
-![image](https://github.com/user-attachments/assets/146fcb00-51c2-4d0c-8070-6dad2159813d)
-![image](https://github.com/user-attachments/assets/461e2433-3db2-49d5-b00c-771cc3e2fa98)
-
-
-
-
-
+- Thanks to Shree Maruti Integrated Logistics Limited for providing this opportunity to build a meaningful project through the hackathon.
 
 ![image](https://github.com/user-attachments/assets/eb17828f-ed36-4b03-a353-de4a8ec08c37)
 
