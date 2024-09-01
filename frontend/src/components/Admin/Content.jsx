@@ -196,7 +196,7 @@ const AdminDashboard = () => {
               backgroundColor: "#10B981",
             }}
           >
-            <span className="text-base">Actual: {actualPercentage}%</span>
+            <span className="text-base">Control: {actualPercentage}%</span>
           </div>
           <div
             className="flex items-center justify-center text-white font-medium p-2"
@@ -205,13 +205,14 @@ const AdminDashboard = () => {
               backgroundColor: "#3B82F6",
             }}
           >
-            <span className="text-base">
-              Experimental: {experimentalPercentage}%
-            </span>
+            <span className="text-base">Target: {experimentalPercentage}%</span>
           </div>
         </div>
 
-        <div className="flex justify-center items-center opacity-90">
+        <div className="flex flex-col items-center opacity-90 p-1">
+          <span className="text-lg font-semibold text-gray-900">
+            Adjust Assignment Percentage
+          </span>
           <Slider
             min={0}
             max={100}
@@ -222,7 +223,7 @@ const AdminDashboard = () => {
               backgroundColor: "#4A90E2",
               color: "#FFFFFF",
               borderRadius: "4px",
-              fontSize: "2px",
+              fontSize: "12px",
             }}
           />
         </div>
