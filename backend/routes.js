@@ -8,6 +8,7 @@ const {
   calculateMetrics,
   updateAssignment,
   getAssignmentGroupForUser,
+  generateTransportationPrice,
 } = require("./utils");
 
 const router = express.Router();
@@ -105,6 +106,69 @@ router.post("/cancelorders", ClerkExpressRequireAuth({}), async (req, res) => {
     });
   } catch (err) {
     console.error("Error handling canceled order:", err);
+    res.status(500).json({ error: "Internal Server Error: " + err.message });
+  }
+});
+
+router.get("/userrole", ClerkExpressRequireAuth({}), async (req, res) => {
+  if (!req.auth || !req.auth.userId) {
+    return res.status(401).json({ error: "Unauthenticated!" });
+  }
+
+  try {
+    const user = await clerkClient.users.getUser(req.auth.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userId = req.auth.userId;
+    const role = await getAssignmentGroupForUser(userId);
+
+    res.status(200).json({
+      role: role,
+    });
+  } catch (err) {
+    console.error("Error handling canceled order:", err);
+    res.status(500).json({ error: "Internal Server Error: " + err.message });
+  }
+});
+
+router.post("/predict", ClerkExpressRequireAuth({}), async (req, res) => {
+  if (!req.auth || !req.auth.userId) {
+    return res.status(401).json({ error: "Unauthenticated!" });
+  }
+
+  try {
+    // Fetch user details from Clerk
+    const user = await clerkClient.users.getUser(req.auth.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const {
+      Distance: distance,
+      PickupTimeWindow: pickupTimeWindow,
+      NumPackages: numPackages,
+      PackageWeight: packageWeight,
+      ServiceType: serviceType,
+      SpecialHandling: specialHandlingNeeded,
+    } = req.body;
+
+    // Generate the price using the transformed data
+    const price = await generateTransportationPrice({
+      distance,
+      pickupTimeWindow,
+      numPackages,
+      packageWeight,
+      serviceType,
+      specialHandlingNeeded,
+    });
+
+    res.status(201).json({
+      prediction: price,
+    });
+  } catch (err) {
+    console.error("Error saving order:", err);
     res.status(500).json({ error: "Internal Server Error: " + err.message });
   }
 });

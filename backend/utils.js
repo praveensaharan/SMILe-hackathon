@@ -274,6 +274,54 @@ async function getAssignmentGroupForUser(userId) {
   }
 }
 
+async function generateTransportationPrice({
+  distance,
+  pickupTimeWindow,
+  numPackages,
+  packageWeight,
+  serviceType,
+  specialHandlingNeeded,
+}) {
+  let basePrice = 50.0;
+
+  const timeFactors = {
+    morning: 1.0,
+    afternoon: 1.1,
+    evening: 1.2,
+  };
+  const timeFactor = timeFactors[pickupTimeWindow] || 1.0;
+
+  const distanceFactor = 1.0 + Math.pow(distance / 200, 1.05);
+
+  const shipmentFactor = 1.0;
+
+  const packageFactor = 1.0 + numPackages * 0.1 + packageWeight * 0.05;
+
+  const serviceFactors = {
+    0: 1.0,
+    1: 1.3,
+    2: 1.7,
+  };
+  const serviceFactor = serviceFactors[serviceType] || 1.0;
+
+  const handlingFactor = specialHandlingNeeded === 1 ? 1.15 : 1.0;
+
+  let price =
+    basePrice *
+    timeFactor *
+    distanceFactor *
+    shipmentFactor *
+    packageFactor *
+    serviceFactor *
+    handlingFactor;
+
+  // Ensure minimum price
+  const minimumPrice = 100.0;
+  price = Math.max(price, minimumPrice);
+
+  return Math.round(price * 100) / 100;
+}
+
 module.exports = {
   getPgVersion,
   getOrders,
@@ -282,4 +330,5 @@ module.exports = {
   calculateMetrics,
   updateAssignment,
   getAssignmentGroupForUser,
+  generateTransportationPrice,
 };
