@@ -329,7 +329,7 @@ const AdminDashboard = () => {
 
         <Col xs={24} md={12}>
           <Card
-            title="Experiment Group"
+            title="Target Group"
             className="w-full bg-gray-100 border-0 rounded-lg shadow-lg"
             headStyle={{
               backgroundColor: "#1f2937",

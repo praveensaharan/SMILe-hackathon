@@ -91,6 +91,7 @@ router.post("/cancelorders", ClerkExpressRequireAuth({}), async (req, res) => {
 
     const userId = req.auth.userId;
     const role = await getAssignmentGroupForUser(userId);
+    console.log(role);
     const orderData = {
       userId: userId,
       role: role,

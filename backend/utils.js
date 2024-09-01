@@ -51,7 +51,7 @@ async function addcancelorders(orderData) {
         distance,
         number_of_packages,
         package_weight,
-        order_price
+        order_price,
         role
       ) VALUES (
         ${orderData.userId},
@@ -62,7 +62,6 @@ async function addcancelorders(orderData) {
         ${orderData.package_weight},
         ${orderData.order_price},
         ${orderData.role}
-    
       )
       RETURNING *; 
     `;
@@ -87,7 +86,7 @@ async function addorders(orderData) {
         package_weight,
         order_price,
         distance,
-        unique_order_id
+        unique_order_id,
         role
       ) VALUES (
         ${orderData.userId},
@@ -99,7 +98,7 @@ async function addorders(orderData) {
         ${orderData.package_weight},
         ${orderData.order_price},
         ${orderData.distance},
-        ${orderData.id}
+        ${orderData.id},
         ${orderData.role}
       )
       RETURNING *; 
