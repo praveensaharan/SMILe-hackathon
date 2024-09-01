@@ -110,10 +110,14 @@ const FormSubmission = () => {
   }, [origin, destination, apiKey]);
 
   useEffect(() => {
-    if (Object.keys(formData).length !== 0 && distance > 0) {
+    if (
+      Object.keys(formData).length !== 0 &&
+      distance > 0 &&
+      userRole !== null
+    ) {
       if (userRole === 0) {
         onFinish1();
-      } else {
+      } else if (userRole === 1) {
         onFinish2();
       }
     }
