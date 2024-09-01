@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Descriptions, notification, Modal, Button } from "antd";
+import { Descriptions, notification, Modal, Button, Spin, message } from "antd";
 import Map from "../UserHome1/Map";
 import { useSession } from "@clerk/clerk-react";
-import { Spin, message } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import axios from "axios";
 
@@ -19,6 +18,7 @@ const FormSubmission = () => {
   const [predictedPrice, setPredictedPrice] = useState(null);
   const [isPayModalVisible, setIsPayModalVisible] = useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const apiKey = import.meta.env.VITE_OLA_KEY;
 
   const formData = location.state?.formData || {};
@@ -40,7 +40,38 @@ const FormSubmission = () => {
     lng: formData.deliveryAddresslat,
   };
 
-  // Ensure the API key is correct
+  console.log(formData, userRole);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (session) {
+        setLoading(true); // Start loading
+        try {
+          const token = await session.getToken();
+          const response = await fetch(`${BaseUrl}/userrole`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch");
+          }
+
+          const data1 = await response.json();
+          setUserRole(data1.role);
+          message.info("User role fetched successfully");
+        } catch (error) {
+          console.error("Error fetching user role:", error.message);
+          message.error("Failed to fetch user role.");
+        } finally {
+          setLoading(false); // Stop loading
+        }
+      }
+    };
+
+    fetchRole();
+  }, [session]);
 
   useEffect(() => {
     const fetchRoute = async () => {
@@ -69,22 +100,26 @@ const FormSubmission = () => {
         }
       } catch (error) {
         console.error("Error fetching route:", error);
+        message.error("Failed to fetch route data.");
       }
     };
 
-    if (Object.keys(formData).length != 0 && origin && destination) {
+    if (Object.keys(formData).length !== 0 && origin && destination) {
       fetchRoute();
     }
   }, [origin, destination, apiKey]);
 
   useEffect(() => {
-    if (Object.keys(formData).length != 0 && distance > 0) {
-      onFinish();
+    if (Object.keys(formData).length !== 0 && distance > 0) {
+      if (userRole === 0) {
+        onFinish1();
+      } else {
+        onFinish2();
+      }
     }
-  }, [distance, formData]);
-  console.log(distance);
+  }, [distance, formData, userRole]);
 
-  const onFinish = () => {
+  const onFinish1 = async () => {
     setLoading(true); // Start loading indicator
 
     if (!origin || !destination) {
@@ -106,29 +141,84 @@ const FormSubmission = () => {
 
     console.log(valuesWithDistance);
 
-    fetch("https://hello-xx4atey7ia-uc.a.run.app/predict", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(valuesWithDistance),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const price = data.prediction;
-        console.log("Predicted price:", price);
-        setPredictedPrice(price);
-      })
-      .catch(() => {
-        notification.error({
-          message: "Prediction Failed",
-          description: "There was an error processing your request.",
-        });
-      })
-      .finally(() => {
-        setLoading(false); // Stop loading indicator after request is completed (either success or error)
+    try {
+      const response = await fetch(
+        `https://hello-xx4atey7ia-uc.a.run.app/predict`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(valuesWithDistance),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      const data = await response.json();
+      const price = data.prediction;
+      console.log("Predicted price from model:", price);
+      setPredictedPrice(price);
+    } catch (error) {
+      notification.error({
+        message: "Prediction Failed",
+        description: "There was an error processing your request.",
       });
+    } finally {
+      setLoading(false); // Ensure loading indicator is stopped
+    }
+  };
+
+  const onFinish2 = async () => {
+    setLoading(true);
+
+    if (!origin || !destination) {
+      notification.error({
+        message: "Validation Error",
+        description: "Please enter both origin and destination addresses.",
+      });
+      setLoading(false); // Stop loading indicator if validation fails
+      return;
+    }
+
+    try {
+      if (session) {
+        const token = await session.getToken();
+
+        const response = await axios.post(
+          `${BaseUrl}/predict`,
+          {
+            Distance: distance,
+            PickupTimeWindow: formData.pickupTimeWindow,
+            NumPackages: parseInt(formData.packageDetails.numberOfPackages, 10),
+            PackageWeight: parseFloat(formData.packageDetails.packageWeight),
+            ServiceType: formData.serviceType,
+            SpecialHandling: formData.specialHandlingNeeded,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = response.data;
+        console.log("Prediction response:", data);
+        const price = data.prediction;
+        console.log("Predicted price from function:", price);
+        setPredictedPrice(price);
+      }
+    } catch (error) {
+      notification.error({
+        message: "Prediction Failed",
+        description: "There was an error processing your request.",
+      });
+    } finally {
+      setLoading(false); // Ensure loading indicator is stopped
+    }
   };
 
   const showPayModal = () => {
