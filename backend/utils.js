@@ -14,21 +14,19 @@ async function getPgVersion() {
   }
 }
 
-// async function getMentors(userid) {
-//   try {
-//     const result = await sql`
-//       SELECT
-//       *
-//       FROM
-//         orders where userid = '${userid}';
-//     `;
+async function updateAssignment(actualPercentage, experimentalPercentage) {
+  try {
+    await sql`
+      UPDATE current_assignment
+      SET actual_percentage = ${actualPercentage}, experimental_percentage = ${experimentalPercentage}
+      WHERE id = 1;
+    `;
+  } catch (error) {
+    console.error("Error updating assignment:", error.message);
+    throw new Error("Internal Server Error");
+  }
+}
 
-//     return result;
-//   } catch (error) {
-//     console.error("Error fetching mentors and availability:", error.message);
-//     throw new Error("Internal Server Error");
-//   }
-// }
 async function getOrders(userid) {
   try {
     const result = await sql`
@@ -39,58 +37,6 @@ async function getOrders(userid) {
     return result;
   } catch (error) {
     console.error("Error fetching orders:", error.message);
-    throw new Error("Internal Server Error");
-  }
-}
-
-async function getMentor(id) {
-  try {
-    const result = await sql`
-      SELECT 
-        m.id AS mentor_id,
-        m.name,
-        m.roles,
-        m.rating,
-        a.date,
-        a.start_time,
-        a.end_time
-      FROM 
-        mentors m
-      LEFT JOIN 
-        availability a
-      ON 
-        m.id = a.mentor_id
-      WHERE
-        m.id = ${id}
-      ORDER BY 
-        a.date, a.start_time;
-    `;
-    if (!result || result.length === 0) {
-      return null;
-    }
-
-    const rolesArray = result[0].roles.split(",").map((role) => role.trim());
-
-    const mentorData = {
-      id: result[0].mentor_id,
-      name: result[0].name,
-      roles: rolesArray,
-      availability: [],
-    };
-
-    result.forEach((row) => {
-      if (row.date && row.start_time && row.end_time) {
-        mentorData.availability.push({
-          date: row.date.toISOString().split("T")[0],
-          startTime: row.start_time.slice(0, 5),
-          endTime: row.end_time.slice(0, 5),
-        });
-      }
-    });
-
-    return mentorData;
-  } catch (error) {
-    console.error("Error fetching mentor and availability:", error.message);
     throw new Error("Internal Server Error");
   }
 }
@@ -106,6 +52,7 @@ async function addcancelorders(orderData) {
         number_of_packages,
         package_weight,
         order_price
+        role
       ) VALUES (
         ${orderData.userId},
         ${orderData.full_name_order},
@@ -113,7 +60,8 @@ async function addcancelorders(orderData) {
         ${orderData.distance},
         ${orderData.number_of_packages},
         ${orderData.package_weight},
-        ${orderData.order_price}
+        ${orderData.order_price},
+        ${orderData.role}
     
       )
       RETURNING *; 
@@ -140,6 +88,7 @@ async function addorders(orderData) {
         order_price,
         distance,
         unique_order_id
+        role
       ) VALUES (
         ${orderData.userId},
         ${orderData.full_name_order},
@@ -151,6 +100,7 @@ async function addorders(orderData) {
         ${orderData.order_price},
         ${orderData.distance},
         ${orderData.id}
+        ${orderData.role}
       )
       RETURNING *; 
     `;
@@ -162,52 +112,112 @@ async function addorders(orderData) {
   }
 }
 
-// Function to send emails with session details
-
 async function calculateMetrics() {
   try {
-    const ordersResult = await sql`
+    // Calculate metrics for role 0 (Experiment Group)
+    const ordersResultRole0 = await sql`
       SELECT 
         SUM(order_price) AS total_revenue, 
         SUM(distance) AS total_distance, 
         COUNT(*) AS total_orders 
-      FROM orders;
+      FROM orders
+      WHERE user_id IN (SELECT user_id FROM users WHERE role = 0);
     `;
 
-    const canceledOrdersResult = await sql`
+    const canceledOrdersResultRole0 = await sql`
       SELECT COUNT(*) AS total_canceled_orders 
-      FROM canceled_orders;
+      FROM canceled_orders
+      WHERE user_id IN (SELECT user_id FROM users WHERE role = 0);
     `;
 
+    // Calculate metrics for role 1 (Control Group)
+    const ordersResultRole1 = await sql`
+      SELECT 
+        SUM(order_price) AS total_revenue, 
+        SUM(distance) AS total_distance, 
+        COUNT(*) AS total_orders 
+      FROM orders
+      WHERE user_id IN (SELECT user_id FROM users WHERE role = 1);
+    `;
+
+    const canceledOrdersResultRole1 = await sql`
+      SELECT COUNT(*) AS total_canceled_orders 
+      FROM canceled_orders
+      WHERE user_id IN (SELECT user_id FROM users WHERE role = 1);
+    `;
+
+    // Fetch total user count
     const userCount = await clerkClient.users.getCount();
 
-    const totalRevenue = parseFloat(ordersResult[0]?.total_revenue) || 0;
-    const totalDistance = parseFloat(ordersResult[0]?.total_distance) || 0;
-    const totalOrders = parseInt(ordersResult[0]?.total_orders) || 0;
-    const totalCanceledOrders =
-      parseInt(canceledOrdersResult[0]?.total_canceled_orders) || 0;
+    // Parse results for role 0 (Experiment Group)
+    const totalRevenueRole0 =
+      parseFloat(ordersResultRole0[0]?.total_revenue) || 0;
+    const totalDistanceRole0 =
+      parseFloat(ordersResultRole0[0]?.total_distance) || 0;
+    const totalOrdersRole0 = parseInt(ordersResultRole0[0]?.total_orders) || 0;
+    const totalCanceledOrdersRole0 =
+      parseInt(canceledOrdersResultRole0[0]?.total_canceled_orders) || 0;
 
-    const avgDistancePerOrder =
-      totalOrders > 0 ? totalDistance / totalOrders : 0;
-    const avgSalePerOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-    const abandonedCartRate = parseFloat(
-      totalOrders + totalCanceledOrders > 0
+    const avgDistancePerOrderRole0 =
+      totalOrdersRole0 > 0 ? totalDistanceRole0 / totalOrdersRole0 : 0;
+    const avgSalePerOrderRole0 =
+      totalOrdersRole0 > 0 ? totalRevenueRole0 / totalOrdersRole0 : 0;
+    const abandonedCartRateRole0 = parseFloat(
+      totalOrdersRole0 + totalCanceledOrdersRole0 > 0
         ? (
-            (totalCanceledOrders / (totalOrders + totalCanceledOrders)) *
+            (totalCanceledOrdersRole0 /
+              (totalOrdersRole0 + totalCanceledOrdersRole0)) *
             100
           ).toFixed(2)
         : 0
     );
 
+    // Parse results for role 1 (Control Group)
+    const totalRevenueRole1 =
+      parseFloat(ordersResultRole1[0]?.total_revenue) || 0;
+    const totalDistanceRole1 =
+      parseFloat(ordersResultRole1[0]?.total_distance) || 0;
+    const totalOrdersRole1 = parseInt(ordersResultRole1[0]?.total_orders) || 0;
+    const totalCanceledOrdersRole1 =
+      parseInt(canceledOrdersResultRole1[0]?.total_canceled_orders) || 0;
+
+    const avgDistancePerOrderRole1 =
+      totalOrdersRole1 > 0 ? totalDistanceRole1 / totalOrdersRole1 : 0;
+    const avgSalePerOrderRole1 =
+      totalOrdersRole1 > 0 ? totalRevenueRole1 / totalOrdersRole1 : 0;
+    const abandonedCartRateRole1 = parseFloat(
+      totalOrdersRole1 + totalCanceledOrdersRole1 > 0
+        ? (
+            (totalCanceledOrdersRole1 /
+              (totalOrdersRole1 + totalCanceledOrdersRole1)) *
+            100
+          ).toFixed(2)
+        : 0
+    );
+
+    // Combine the metrics for both roles into a single object
     const metrics = {
-      totalRevenue,
-      totalBookings: totalOrders,
-      totalSales: totalRevenue,
-      checkedPriceButDidntOrder: totalCanceledOrders,
-      avgSalePerOrder: parseFloat(avgSalePerOrder.toFixed(2)),
-      avgDistancePerOrder: parseFloat(avgDistancePerOrder.toFixed(2)),
-      abandonedCartRate,
+      experimentGroup: {
+        totalRevenue: totalRevenueRole0,
+        totalBookings: totalOrdersRole0,
+        totalSales: totalRevenueRole0,
+        checkedPriceButDidntOrder: totalCanceledOrdersRole0,
+        avgSalePerOrder: parseFloat(avgSalePerOrderRole0.toFixed(2)),
+        avgDistancePerOrder: parseFloat(avgDistancePerOrderRole0.toFixed(2)),
+        abandonedCartRate: abandonedCartRateRole0,
+      },
+      controlGroup: {
+        totalRevenue: totalRevenueRole1,
+        totalBookings: totalOrdersRole1,
+        totalSales: totalRevenueRole1,
+        checkedPriceButDidntOrder: totalCanceledOrdersRole1,
+        avgSalePerOrder: parseFloat(avgSalePerOrderRole1.toFixed(2)),
+        avgDistancePerOrder: parseFloat(avgDistancePerOrderRole1.toFixed(2)),
+        abandonedCartRate: abandonedCartRateRole1,
+      },
       totalUsers: userCount,
+      totalRevenue: totalRevenueRole0 + totalRevenueRole1,
+      totalBookings: totalOrdersRole0 + totalOrdersRole1,
     };
 
     return metrics;
@@ -217,109 +227,60 @@ async function calculateMetrics() {
   }
 }
 
-async function emailssend(mentor_email, user_email, date, time, duration) {
+async function getAssignmentGroupForUser(userId) {
   try {
-    const formattedTime = formatTimeTo12Hour(time); // Format the time to 12-hour format
+    const existingUser =
+      await sql`SELECT role FROM users WHERE user_id = ${userId}`;
 
-    await sendSessionEmails(
-      mentor_email, // mentor's email
-      user_email, // user's email
-      date, // session date
-      formattedTime, // formatted session time
-      duration // session duration
-    );
-
-    return true; // Return true if emails are sent successfully
-  } catch (error) {
-    console.error("Error sending emails:", error.message);
-    throw new Error("Internal Server Error");
-  }
-}
-
-async function getpaymentDone(id) {
-  try {
-    const paymentResult = await sql`
-      SELECT * FROM payment WHERE id = ${id};
-    `;
-    if (paymentResult.length === 0) {
-      return { error: "Payment not found" };
+    if (existingUser.length > 0) {
+      const role = existingUser[0].role;
+      console.log(`User ${userId} already assigned to group ${role}.`);
+      return role;
     }
 
-    if (paymentResult[0].paid === true) {
-      return { message: "Payment already made" };
-    }
+    const result = await sql`SELECT actual_percentage FROM current_assignment`;
+    const controlGroupDistribution = isNaN(
+      parseInt(result[0].actual_percentage)
+    )
+      ? 0.7
+      : parseInt(result[0].actual_percentage) / 100;
+    console.log("Actual Percentage:", controlGroupDistribution);
 
-    const {
-      student_id: studentId,
-      mentor_id: mentorId,
-      role,
-      duration,
-      date,
-      time,
-    } = paymentResult[0];
+    const [controlAssignments, experimentAssignments] = await Promise.all([
+      sql`SELECT COUNT(*) FROM users WHERE role = 1`,
+      sql`SELECT COUNT(*) FROM users WHERE role = 0`,
+    ]);
 
-    let startDateTime = new Date(
-      `${new Date(date).toISOString().split("T")[0]}T${time}Z`
+    const controlCount = parseInt(controlAssignments[0].count, 10);
+    const experimentCount = parseInt(experimentAssignments[0].count, 10);
+    const totalAssignments = controlCount + experimentCount;
+
+    const controlDesired = Math.round(
+      controlGroupDistribution * totalAssignments
     );
 
-    startDateTime.setMinutes(startDateTime.getMinutes() + 330);
+    const role = controlCount < controlDesired ? 1 : 0;
+    await sql`INSERT INTO users (user_id, role) VALUES (${userId}, ${role})`;
 
-    const formattedDateTime = startDateTime
-      .toISOString()
-      .replace("T", " ")
-      .split(".")[0];
-
-    await sql`
-      INSERT INTO sessions (
-        student_id,
-        mentor_id,
-        date_time,
-        duration,
-        role,
-        order_id
-      ) VALUES (
-        ${studentId},
-        ${mentorId},
-        ${formattedDateTime}::TIMESTAMP,
-        ${duration},
-        ${role},
-        ${id}
-      );
-    `;
-
-    const newEndTime = calculateNewEndTime(time, duration);
-
-    await sql`
-      UPDATE availability
-      SET start_time = ${newEndTime}
-      WHERE mentor_id = ${mentorId}
-      AND date = ${date};
-    `;
-
-    await sql`
-      UPDATE payment SET paid = true WHERE id = ${id};
-    `;
-    await emailssend(
-      paymentResult[0].mentor_email,
-      paymentResult[0].user_email,
-      paymentResult[0].date,
-      paymentResult[0].time,
-      paymentResult[0].duration
+    console.log(
+      `User ${userId} is assigned to the ${
+        role === 1 ? "Control" : "Experiment"
+      } group.`
     );
 
-    return { message: "Payment processed and session scheduled" };
+    return role;
   } catch (error) {
-    console.error("Error processing payment:", error.message);
-    throw new Error("Internal Server Error");
+    console.error("Error assigning group:", error.message);
+    throw error;
   }
 }
 
 module.exports = {
   getPgVersion,
   getOrders,
-  getMentor,
   addcancelorders,
   addorders,
-  getpaymentDone,
   calculateMetrics,
+  updateAssignment,
+  getAssignmentGroupForUser,
 };

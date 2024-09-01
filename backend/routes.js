@@ -6,6 +6,8 @@ const {
   addcancelorders,
   addorders,
   calculateMetrics,
+  updateAssignment,
+  getAssignmentGroupForUser,
 } = require("./utils");
 
 const router = express.Router();
@@ -56,11 +58,13 @@ router.post("/saveorders", ClerkExpressRequireAuth({}), async (req, res) => {
     const userId = req.auth.userId;
     const randomValue = crypto.randomBytes(4).toString("hex");
     const orderId = `${new Date().toISOString().slice(-7)}${randomValue}`;
+    const role = await getAssignmentGroupForUser(userId);
 
     const orderData = {
       userId: userId,
       ...req.body,
       id: orderId,
+      role: role,
     };
 
     const insertedOrder = await addorders(orderData);
@@ -86,8 +90,10 @@ router.post("/cancelorders", ClerkExpressRequireAuth({}), async (req, res) => {
     }
 
     const userId = req.auth.userId;
+    const role = await getAssignmentGroupForUser(userId);
     const orderData = {
       userId: userId,
+      role: role,
       ...req.body,
     };
 
@@ -102,33 +108,55 @@ router.post("/cancelorders", ClerkExpressRequireAuth({}), async (req, res) => {
   }
 });
 
-router.get("/calculatedmetrics", async (req, res) => {
-  // Uncomment the following code if you need authentication
-  /*
-  if (!req.auth || !req.auth.userId) {
-    return res.status(401).json({ error: "Unauthenticated!" });
-  }
-
-  try {
-    const user = await clerkClient.users.getUser(req.auth.userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+router.get(
+  "/calculatedmetrics",
+  ClerkExpressRequireAuth({}),
+  async (req, res) => {
+    if (!req.auth || !req.auth.userId) {
+      return res.status(401).json({ error: "Unauthenticated!" });
     }
-  } catch (err) {
-    console.error("Error fetching user: ", err);
-    return res.status(500).json({ error: "Internal Server Error: " + err.message });
-  }
-  */
 
-  try {
-    const result = await calculateMetrics();
-    res.status(200).json({
-      metrics: result,
-    });
-  } catch (err) {
-    console.error("Error calculating metrics: ", err);
-    res.status(500).json({ error: "Internal Server Error: " + err.message });
+    try {
+      const user = await clerkClient.users.getUser(req.auth.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const { unsafeMetadata } = user;
+      if (!unsafeMetadata || !unsafeMetadata.actualPercentage) {
+        return res
+          .status(400)
+          .json({ error: "Actual percentage not found in user metadata." });
+      }
+
+      const actualPercentage = parseInt(unsafeMetadata.actualPercentage, 10);
+      if (
+        isNaN(actualPercentage) ||
+        actualPercentage < 0 ||
+        actualPercentage > 100
+      ) {
+        return res
+          .status(400)
+          .json({ error: "Percentage must be between 0 and 100." });
+      }
+
+      const experimentalPercentage = 100 - actualPercentage;
+
+      // Update the assignment percentages in the database
+      await updateAssignment(actualPercentage, experimentalPercentage);
+
+      // Calculate the metrics
+      const result = await calculateMetrics();
+
+      // Respond with the calculated metrics
+      res.status(200).json({
+        metrics: result,
+      });
+    } catch (err) {
+      console.error("Error calculating metrics: ", err);
+      res.status(500).json({ error: "Internal Server Error: " + err.message });
+    }
   }
-});
+);
 
 module.exports = router;

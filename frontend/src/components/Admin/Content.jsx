@@ -1,46 +1,82 @@
-import React, { useState, useEffect } from "react";
-import { Spin, Card, Row, Col, Statistic } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Spin, Card, Row, Col, Statistic, notification, Slider } from "antd";
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
-import { useSession } from "@clerk/clerk-react";
-import { Slider } from "antd";
+import { useSession, useUser } from "@clerk/clerk-react";
+import axios from "axios";
+
 const BaseUrl = "https://backend-peach-theta.vercel.app";
 // const BaseUrl = "http://localhost:3000";
 
 const AdminDashboard = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
-
   const { session } = useSession();
-
-  // const [actualPercentage, setActualPercentage] = useState(70);
-  // const [experimentalPercentage, setExperimentalPercentage] = useState(30);
-
-  // const handleActualChange = (e) => {
-  //   const value = parseInt(e.target.value, 10);
-  //   if (value >= 0 && value <= 100) {
-  //     setActualPercentage(value);
-  //     setExperimentalPercentage(100 - value);
-  //   }
-  // };
-
-  // const handleExperimentalChange = (e) => {
-  //   const value = parseInt(e.target.value, 10);
-  //   if (value >= 0 && value <= 100) {
-  //     setExperimentalPercentage(value);
-  //     setActualPercentage(100 - value);
-  //   }
-  // };
-
+  const { user } = useUser();
   const [actualPercentage, setActualPercentage] = useState(70);
   const [experimentalPercentage, setExperimentalPercentage] = useState(30);
 
-  const handleSliderChange = (value) => {
+  const notificationTimeoutRef = useRef(null);
+
+  const handleSliderChange = async (value) => {
     setActualPercentage(value);
     setExperimentalPercentage(100 - value);
+
+    // Update the user's unsafeMetadata with the new percentage
+    try {
+      await user.update({
+        unsafeMetadata: { actualPercentage: value.toString() },
+      });
+    } catch (error) {
+      console.error("Failed to update user metadata:", error);
+    }
+
+    // Clear any existing notification timeout
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+
+    // Debounce the notification and API call
+    notificationTimeoutRef.current = setTimeout(() => {
+      notification.success({
+        message: "Percentage Allocation Updated",
+        showProgress: true,
+        description: `The distribution has been updated: ${value}% Actual and ${
+          100 - value
+        }% Experimental.`,
+        placement: "topRight",
+        duration: 3,
+        className: "notification-custom-style",
+      });
+    }, 300); // Adjusted delay for better responsiveness
   };
 
   useEffect(() => {
-    const fetchOrdersData = async () => {
+    const initializePercentage = () => {
+      if (user) {
+        const { unsafeMetadata } = user;
+
+        if (unsafeMetadata && unsafeMetadata.actualPercentage) {
+          const storedPercentage = parseInt(unsafeMetadata.actualPercentage);
+          if (!isNaN(storedPercentage)) {
+            setActualPercentage(storedPercentage);
+            setExperimentalPercentage(100 - storedPercentage);
+          }
+        }
+      }
+    };
+
+    initializePercentage();
+  }, [user]);
+
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
+  useEffect(() => {
+    const fetchMetricssData = async () => {
       if (session) {
         try {
           const token = await session.getToken();
@@ -55,7 +91,6 @@ const AdminDashboard = () => {
           }
 
           const data1 = await response.json();
-          console.log(data1.metrics);
           setData(data1.metrics);
         } catch (error) {
           console.error("Error fetching orders data:", error.message);
@@ -65,12 +100,12 @@ const AdminDashboard = () => {
       }
     };
 
-    fetchOrdersData();
+    fetchMetricssData();
   }, [session]);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex justify-center items-center min-h-screen">
         <Spin
           size="large"
           tip="Loading your dashboard..."
@@ -197,7 +232,7 @@ const AdminDashboard = () => {
         <Col xs={24} md={12}>
           <Card
             title="Control Group"
-            className="w-full bg-gradient-to-r from-gray-100 to-gray-200 border-0 rounded-lg shadow-lg"
+            className="w-full bg-gray-100 border-0 rounded-lg shadow-lg"
             headStyle={{
               backgroundColor: "#1f2937",
               color: "white",
@@ -214,7 +249,7 @@ const AdminDashboard = () => {
                       Total Sales
                     </span>
                   }
-                  value={data.totalSales}
+                  value={data.controlGroup.totalSales}
                   prefix={<span className="text-xl text-green-600">₹</span>}
                   valueStyle={{
                     fontSize: "1.5rem",
@@ -230,7 +265,7 @@ const AdminDashboard = () => {
                       Checked Price, Didn't Order
                     </span>
                   }
-                  value={data.checkedPriceButDidntOrder}
+                  value={data.controlGroup.checkedPriceButDidntOrder}
                   valueStyle={{
                     fontSize: "1.5rem",
                     fontWeight: "bold",
@@ -245,7 +280,7 @@ const AdminDashboard = () => {
                       Average Sale per Order
                     </span>
                   }
-                  value={data.avgSalePerOrder}
+                  value={data.controlGroup.avgSalePerOrder}
                   prefix={<span className="text-xl text-blue-600">₹</span>}
                   precision={2}
                   valueStyle={{
@@ -262,7 +297,7 @@ const AdminDashboard = () => {
                       Avg. Distance per Order
                     </span>
                   }
-                  value={data.avgDistancePerOrder}
+                  value={data.controlGroup.avgDistancePerOrder}
                   suffix={<span className="text-sm text-gray-500">km</span>}
                   precision={2}
                   valueStyle={{
@@ -279,7 +314,7 @@ const AdminDashboard = () => {
                       Abandoned Cart Rate
                     </span>
                   }
-                  value={`${data.abandonedCartRate}%`}
+                  value={`${data.controlGroup.abandonedCartRate}%`}
                   valueStyle={{
                     fontSize: "1.5rem",
                     fontWeight: "bold",
@@ -294,7 +329,7 @@ const AdminDashboard = () => {
         <Col xs={24} md={12}>
           <Card
             title="Experiment Group"
-            className="w-full bg-gradient-to-r from-gray-100 to-gray-200 border-0 rounded-lg shadow-lg"
+            className="w-full bg-gray-100 border-0 rounded-lg shadow-lg"
             headStyle={{
               backgroundColor: "#1f2937",
               color: "white",
@@ -311,7 +346,7 @@ const AdminDashboard = () => {
                       Total Sales
                     </span>
                   }
-                  value={data.totalSales}
+                  value={data.experimentGroup.totalSales}
                   prefix={<span className="text-xl text-green-600">₹</span>}
                   valueStyle={{
                     fontSize: "1.5rem",
@@ -327,7 +362,7 @@ const AdminDashboard = () => {
                       Checked Price, Didn't Order
                     </span>
                   }
-                  value={data.checkedPriceButDidntOrder}
+                  value={data.experimentGroup.checkedPriceButDidntOrder}
                   valueStyle={{
                     fontSize: "1.5rem",
                     fontWeight: "bold",
@@ -342,7 +377,7 @@ const AdminDashboard = () => {
                       Average Sale per Order
                     </span>
                   }
-                  value={data.avgSalePerOrder}
+                  value={data.experimentGroup.avgSalePerOrder}
                   prefix={<span className="text-xl text-blue-600">₹</span>}
                   precision={2}
                   valueStyle={{
@@ -359,7 +394,7 @@ const AdminDashboard = () => {
                       Avg. Distance per Order
                     </span>
                   }
-                  value={data.avgDistancePerOrder}
+                  value={data.experimentGroup.avgDistancePerOrder}
                   suffix={<span className="text-sm text-gray-500">km</span>}
                   precision={2}
                   valueStyle={{
@@ -376,7 +411,7 @@ const AdminDashboard = () => {
                       Abandoned Cart Rate
                     </span>
                   }
-                  value={`${data.abandonedCartRate}%`}
+                  value={`${data.experimentGroup.abandonedCartRate}%`}
                   valueStyle={{
                     fontSize: "1.5rem",
                     fontWeight: "bold",

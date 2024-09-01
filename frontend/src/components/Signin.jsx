@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SignIn, SignUp, useUser, useClerk } from "@clerk/clerk-react";
 import { useSignIn } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { Spin, Alert, message as antdMessage } from "antd";
+import { Spin, Alert, message as antdMessage, notification } from "antd";
 import UserLogin from "./User/UserLogin";
 import AdminLogin from "./Admin/AdminLogin";
 const imageurl =
@@ -14,6 +14,37 @@ const Signin = () => {
   const navigate = useNavigate();
   const { signOut } = useClerk();
   const { user } = useUser();
+
+  notification.info({
+    className: "bg-blue-100 h-24 text-sm p-0",
+    message: "🎉 Welcome! Admin access:",
+    maxCount: 1,
+    duration: 5,
+    showProgress: true,
+    placement: "bottom",
+    description: (
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <span>
+          Email:{" "}
+          <span style={{ color: "blue", fontWeight: "semibold" }}>
+            carrers@logipredict.com
+          </span>
+        </span>
+        <span>
+          Password:{" "}
+          <span style={{ color: "green", fontWeight: "semibold" }}>
+            LogiPredict@hackathon
+          </span>
+        </span>
+      </div>
+    ),
+    style: {
+      borderRadius: "8px",
+      padding: "16px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    },
+    icon: <i className="fas fa-user-shield" style={{ color: "blue" }} />,
+  });
 
   useEffect(() => {
     const checkAdminPrivileges = async () => {
