@@ -60,7 +60,11 @@ const FormSubmission = () => {
 
           const data1 = await response.json();
           setUserRole(data1.role);
-          message.info("User role fetched successfully");
+          if (data1.role === 1) {
+            message.info("User role is in control");
+          } else if (data1.role === 0) {
+            message.info("User role is in target");
+          }
         } catch (error) {
           console.error("Error fetching user role:", error.message);
           message.error("Failed to fetch user role.");
